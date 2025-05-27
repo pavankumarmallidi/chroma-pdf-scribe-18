@@ -21,15 +21,29 @@ const AuthPage = () => {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
-    const { error } = await signIn(email, password);
+    console.log('Login attempt for email:', email);
+
+    const { data, error } = await signIn(email, password);
     
     if (error) {
+      console.error('Login error:', error);
+      
+      let errorMessage = error.message;
+      
+      // Handle specific error cases
+      if (error.message.includes('email_not_confirmed')) {
+        errorMessage = "Please check your email and click the confirmation link before logging in.";
+      } else if (error.message.includes('Invalid login credentials')) {
+        errorMessage = "Invalid email or password. Please check your credentials and try again.";
+      }
+      
       toast({
         title: "Login failed",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
-    } else {
+    } else if (data.user) {
+      console.log('Login successful:', data.user);
       toast({
         title: "Welcome back!",
         description: "You've successfully logged in.",
@@ -48,18 +62,22 @@ const AuthPage = () => {
     const password = formData.get('password') as string;
     const fullName = formData.get('fullName') as string;
 
-    const { error } = await signUp(email, password, fullName);
+    console.log('Registration attempt for email:', email);
+
+    const { data, error } = await signUp(email, password, fullName);
     
     if (error) {
+      console.error('Registration error:', error);
       toast({
         title: "Registration failed",
         description: error.message,
         variant: "destructive",
       });
     } else {
+      console.log('Registration successful:', data);
       toast({
         title: "Account created!",
-        description: "Welcome to PDF CONTENT EXTRACTOR.",
+        description: "Please check your email to confirm your account before logging in.",
       });
     }
     

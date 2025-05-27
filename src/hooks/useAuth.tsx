@@ -9,17 +9,22 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener
+    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log('Auth state changed:', event, session);
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
       }
     );
 
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error('Error getting session:', error);
+      }
+      console.log('Initial session check:', session);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -29,14 +34,21 @@ export const useAuth = () => {
   }, []);
 
   const signIn = async (email: string, password: string) => {
+    console.log('Attempting to sign in with email:', email);
+    
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
+    console.log('Sign in response:', { data, error });
+    
     return { data, error };
   };
 
   const signUp = async (email: string, password: string, fullName: string) => {
+    console.log('Attempting to sign up with email:', email);
+    
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -46,11 +58,24 @@ export const useAuth = () => {
         },
       },
     });
+
+    console.log('Sign up response:', { data, error });
+    
     return { data, error };
   };
 
   const signOut = async () => {
+    console.log('Attempting to sign out');
+    
     const { error } = await supabase.auth.signOut();
+    
+    if (!error) {
+      setSession(null);
+      setUser(null);
+    }
+    
+    console.log('Sign out response:', { error });
+    
     return { error };
   };
 
