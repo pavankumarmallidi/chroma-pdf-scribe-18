@@ -23,7 +23,7 @@ const ChatSummary = ({ onBackToHome, pdfSummary = "Your PDF has been successfull
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      text: "Welcome to pdfocrextractor. We've analyzed your PDF. You can ask me questions about it.",
+      text: "Welcome to PDF CONTENT EXTRACTOR. We've analyzed your PDF. You can ask me questions about it.",
       isUser: false,
       timestamp: new Date(),
     },
@@ -47,7 +47,7 @@ const ChatSummary = ({ onBackToHome, pdfSummary = "Your PDF has been successfull
     setInputMessage("");
     setIsLoading(true);
 
-    // Simulate API call to webhook - replace with actual webhook call after Supabase integration
+    // TODO: Replace with actual Webhook Trigger 2 call
     setTimeout(() => {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
