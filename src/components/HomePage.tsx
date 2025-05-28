@@ -1,8 +1,6 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { 
   FileText, 
   Sparkles, 
@@ -23,7 +21,6 @@ interface HomePageProps {
 
 const HomePage = ({ onGetStarted }: HomePageProps) => {
   const { user } = useAuth();
-  const [email, setEmail] = useState("");
 
   const features = [
     {
@@ -84,16 +81,17 @@ const HomePage = ({ onGetStarted }: HomePageProps) => {
             <div className="w-10 h-10 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] rounded-lg flex items-center justify-center">
               <FileText className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white">PDF Analyzer</h1>
+            <h1 className="text-lg font-bold text-white">PDF Analyzer</h1>
           </div>
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
-            <a href="#how-it-works" className="text-gray-300 hover:text-white transition-colors">How it works</a>
-            <a href="#benefits" className="text-gray-300 hover:text-white transition-colors">Benefits</a>
+            <a href="#features" className="text-gray-300 hover:text-white transition-colors text-sm">Features</a>
+            <a href="#how-it-works" className="text-gray-300 hover:text-white transition-colors text-sm">How it works</a>
+            <a href="#benefits" className="text-gray-300 hover:text-white transition-colors text-sm">Benefits</a>
             <Button
               onClick={onGetStarted}
               variant="outline"
-              className="border-[#6366f1] text-[#6366f1] hover:bg-[#6366f1] hover:text-white"
+              size="sm"
+              className="border-[#6366f1] text-[#6366f1] hover:bg-[#6366f1] hover:text-white text-sm"
             >
               {user ? "Go to App" : "Log in"}
             </Button>
@@ -118,24 +116,12 @@ const HomePage = ({ onGetStarted }: HomePageProps) => {
             Upload once – get comprehensive analysis, summaries, and interactive chat capabilities.
           </p>
 
-          <div className="max-w-md mx-auto mb-8">
-            <div className="flex gap-3">
-              <Input
-                type="text"
-                placeholder="What would you like to analyze?"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-[#1e1e1e]/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-[#6366f1] backdrop-blur-sm"
-              />
-              <Button 
-                onClick={onGetStarted}
-                className="bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#5855eb] hover:to-[#7c3aed] text-white border-0 px-6"
-              >
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </div>
-            <p className="text-gray-400 text-sm mt-3">Start for free. No credit card required.</p>
-          </div>
+          <Button 
+            onClick={onGetStarted}
+            className="bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#5855eb] hover:to-[#7c3aed] text-white border-0 px-8 py-6 text-lg mb-8"
+          >
+            Start for free. No credit card required.
+          </Button>
 
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             {["PDF Extractor", "Document Analyzer", "AI Summarizer", "Content Chat"].map((tag) => (

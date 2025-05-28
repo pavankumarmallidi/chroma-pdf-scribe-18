@@ -2,8 +2,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,6 +11,50 @@ interface AuthPageProps {
   onBackToHome?: () => void;
   onSuccess?: () => void;
 }
+
+interface FloatingInputProps {
+  id: string;
+  name: string;
+  type: string;
+  placeholder: string;
+  required?: boolean;
+  disabled?: boolean;
+}
+
+const FloatingInput = ({ id, name, type, placeholder, required = false, disabled = false }: FloatingInputProps) => {
+  const [focused, setFocused] = useState(false);
+  const [hasValue, setHasValue] = useState(false);
+
+  return (
+    <div className="relative">
+      <input
+        id={id}
+        name={name}
+        type={type}
+        required={required}
+        disabled={disabled}
+        className="peer w-full px-4 py-3 bg-[#2a2a2a]/50 border border-gray-600 rounded-lg text-white placeholder-transparent focus:border-[#6366f1] focus:outline-none transition-colors"
+        placeholder={placeholder}
+        onFocus={() => setFocused(true)}
+        onBlur={(e) => {
+          setFocused(false);
+          setHasValue(e.target.value !== '');
+        }}
+        onChange={(e) => setHasValue(e.target.value !== '')}
+      />
+      <label
+        htmlFor={id}
+        className={`absolute left-4 transition-all duration-200 pointer-events-none ${
+          focused || hasValue
+            ? '-top-2 text-xs text-[#6366f1] bg-[#1e1e1e] px-1'
+            : 'top-3 text-gray-400'
+        }`}
+      >
+        {placeholder}
+      </label>
+    </div>
+  );
+};
 
 const AuthPage = ({ onBackToHome, onSuccess }: AuthPageProps) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -105,7 +147,7 @@ const AuthPage = ({ onBackToHome, onSuccess }: AuthPageProps) => {
         <Button
           onClick={onBackToHome}
           variant="ghost"
-          className="absolute top-6 left-6 text-gray-300 hover:text-white z-20"
+          className="absolute top-6 left-6 text-gray-300 hover:text-black hover:bg-white z-20"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Home
@@ -140,32 +182,24 @@ const AuthPage = ({ onBackToHome, onSuccess }: AuthPageProps) => {
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="login" className="space-y-4 mt-6">
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-white text-base">Email</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    disabled={isLoading}
-                    className="bg-[#2a2a2a]/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-[#6366f1] text-sm"
-                    placeholder="Enter your email"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-white text-base">Password</Label>
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    required
-                    disabled={isLoading}
-                    className="bg-[#2a2a2a]/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-[#6366f1] text-sm"
-                    placeholder="Enter your password"
-                  />
-                </div>
+            <TabsContent value="login" className="space-y-6 mt-6">
+              <form onSubmit={handleLogin} className="space-y-6">
+                <FloatingInput
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Email"
+                  required
+                  disabled={isLoading}
+                />
+                <FloatingInput
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  required
+                  disabled={isLoading}
+                />
                 <Button 
                   type="submit" 
                   disabled={isLoading}
@@ -176,44 +210,32 @@ const AuthPage = ({ onBackToHome, onSuccess }: AuthPageProps) => {
               </form>
             </TabsContent>
 
-            <TabsContent value="register" className="space-y-4 mt-6">
-              <form onSubmit={handleRegister} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="fullName" className="text-white text-base">Full Name</Label>
-                  <Input
-                    id="fullName"
-                    name="fullName"
-                    type="text"
-                    required
-                    disabled={isLoading}
-                    className="bg-[#2a2a2a]/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-[#6366f1] text-sm"
-                    placeholder="Enter your full name"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="reg-email" className="text-white text-base">Email</Label>
-                  <Input
-                    id="reg-email"
-                    name="email"
-                    type="email"
-                    required
-                    disabled={isLoading}
-                    className="bg-[#2a2a2a]/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-[#6366f1] text-sm"
-                    placeholder="Enter your email"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="reg-password" className="text-white text-base">Password</Label>
-                  <Input
-                    id="reg-password"
-                    name="password"
-                    type="password"
-                    required
-                    disabled={isLoading}
-                    className="bg-[#2a2a2a]/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-[#6366f1] text-sm"
-                    placeholder="Create a password"
-                  />
-                </div>
+            <TabsContent value="register" className="space-y-6 mt-6">
+              <form onSubmit={handleRegister} className="space-y-6">
+                <FloatingInput
+                  id="fullName"
+                  name="fullName"
+                  type="text"
+                  placeholder="Name"
+                  required
+                  disabled={isLoading}
+                />
+                <FloatingInput
+                  id="reg-email"
+                  name="email"
+                  type="email"
+                  placeholder="Email"
+                  required
+                  disabled={isLoading}
+                />
+                <FloatingInput
+                  id="reg-password"
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  required
+                  disabled={isLoading}
+                />
                 <Button 
                   type="submit" 
                   disabled={isLoading}
