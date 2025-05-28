@@ -2,11 +2,10 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Home, FileText, ChevronDown } from "lucide-react";
+import { Home, FileText, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { sendChatMessage } from "@/services/chatService";
-import ChatHeader from "./ChatHeader";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import DocumentSidebar from "./DocumentSidebar";
@@ -32,7 +31,7 @@ interface ChatSummaryProps {
 }
 
 const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -43,26 +42,25 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showScrollButton, setShowScrollButton] = useState(false);
   const { toast } = useToast();
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const handleScroll = () => {
-    if (chatContainerRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
-      const isScrolledUp = scrollHeight - scrollTop - clientHeight > 100;
-      setShowScrollButton(isScrolledUp);
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast({
+        title: "Logged out successfully",
+        description: "See you next time!",
+      });
+      onBackToHome();
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast({
+        title: "Logout failed",
+        description: "Please try again.",
+        variant: "destructive",
+      });
     }
   };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,7 +83,7 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
     try {
       const response = await sendChatMessage(messageToSend, user.email);
       
-      let botMessageText = "Based on your PDF analysis, I can help you understand the key concepts and details from your document. Could you be more specific about what aspect you'd like me to elaborate on?";
+      let botMessageText = "I understand you'd like to know more about your PDF. Could you be more specific about what aspect you'd like me to elaborate on?";
       let relevanceScore: number | undefined;
 
       if (response && Array.isArray(response) && response.length > 0 && response[0].output) {
@@ -109,11 +107,24 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
       setMessages(prev => [...prev, botResponse]);
     } catch (error) {
       console.error("Chat message failed:", error);
+      
+      const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      
       toast({
         title: "Message failed",
-        description: "Unable to send message. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
+
+      // Add error message to chat
+      const errorResponse: Message = {
+        id: (Date.now() + 2).toString(),
+        text: `Sorry, I encountered an error: ${errorMessage}. Please try again.`,
+        isUser: false,
+        timestamp: new Date(),
+      };
+      
+      setMessages(prev => [...prev, errorResponse]);
     } finally {
       setIsLoading(false);
     }
@@ -121,7 +132,7 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0f23] via-[#1a1a2e] to-[#16213e] relative overflow-hidden">
-      {/* Enhanced background with subtle patterns */}
+      {/* Enhanced background */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/20 via-transparent to-transparent"></div>
       <div 
         className="absolute inset-0 opacity-30"
@@ -130,7 +141,7 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
         }}
       ></div>
 
-      {/* Modern Header with glassmorphism */}
+      {/* Header */}
       <div className="relative z-10 backdrop-blur-xl bg-white/5 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
@@ -139,58 +150,59 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
                 <FileText className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white tracking-tight">PDF Analysis</h1>
-                <p className="text-gray-300 text-sm">Chat with your document using AI</p>
+                <h1 className="text-2xl font-bold text-white tracking-tight">PDF Analysis Chat</h1>
+                <p className="text-gray-300 text-sm">Intelligent document analysis and Q&A</p>
               </div>
             </div>
-            <Button
-              onClick={onBackToHome}
-              variant="outline"
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/10"
-            >
-              <Home className="w-4 h-4 mr-2" />
-              Back to Home
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={onBackToHome}
+                variant="outline"
+                className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+              >
+                <Home className="w-4 h-4 mr-2" />
+                Home
+              </Button>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="bg-red-500/20 border-red-500/30 text-red-300 hover:bg-red-500/30 hover:border-red-500/40 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                title="Logout"
+              >
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content with fixed height */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6 h-[calc(100vh-140px)]">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
+      {/* Main Content - Two Panel Layout */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        <div className="h-[calc(100vh-140px)] flex flex-col lg:flex-row gap-6">
           
-          {/* Enhanced Document Sidebar */}
-          <div className="lg:order-1 order-2">
+          {/* Left Panel - Document Sidebar */}
+          <div className="lg:w-80 flex-shrink-0">
             <DocumentSidebar pdfAnalysisData={pdfAnalysisData} />
           </div>
 
-          {/* Chat Interface with Fixed Height */}
-          <div className="lg:col-span-3 order-1 lg:order-2 h-full">
+          {/* Right Panel - Chat Interface */}
+          <div className="flex-1 min-w-0">
             <Card className="h-full flex flex-col bg-white/5 backdrop-blur-xl border-white/10 shadow-2xl shadow-black/20 rounded-3xl overflow-hidden">
-              <ChatHeader />
+              {/* Chat Header */}
+              <div className="p-6 border-b border-white/10 bg-white/5 backdrop-blur-sm">
+                <h2 className="text-lg font-semibold text-white">Chat with your document</h2>
+                <p className="text-gray-400 text-sm">Ask questions about the content and get intelligent answers</p>
+              </div>
               
-              {/* Chat Messages Area with fixed height and scrollbar */}
-              <div className="flex-1 relative overflow-hidden min-h-0">
+              {/* Chat Messages Area - Fixed Height with Scrollbar */}
+              <div className="flex-1 min-h-0 overflow-hidden">
                 <MessageList 
                   messages={messages} 
-                  isLoading={isLoading} 
-                  messagesEndRef={messagesEndRef}
-                  onScroll={handleScroll}
-                  ref={chatContainerRef}
+                  isLoading={isLoading}
                 />
-                
-                {/* Scroll to bottom button */}
-                {showScrollButton && (
-                  <Button
-                    onClick={scrollToBottom}
-                    size="icon"
-                    className="absolute bottom-4 right-4 z-10 bg-violet-600/80 hover:bg-violet-600 backdrop-blur-sm border border-white/20 shadow-lg hover:scale-110 transition-all duration-300 rounded-full"
-                  >
-                    <ChevronDown className="w-4 h-4" />
-                  </Button>
-                )}
               </div>
 
+              {/* Message Input */}
               <MessageInput
                 inputMessage={inputMessage}
                 setInputMessage={setInputMessage}

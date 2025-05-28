@@ -21,7 +21,7 @@ const MessageInput = ({ inputMessage, setInputMessage, onSendMessage, isLoading 
   };
 
   return (
-    <div className="p-4 backdrop-blur-sm bg-white/5 border-t border-white/10 flex-shrink-0">
+    <div className="p-6 backdrop-blur-sm bg-white/5 border-t border-white/10 flex-shrink-0">
       <form onSubmit={onSendMessage} className="flex gap-3 items-end">
         <div className="flex-1 relative">
           <Textarea
