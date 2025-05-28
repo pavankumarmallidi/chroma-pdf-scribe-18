@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -26,14 +25,14 @@ const FloatingInput = ({ id, name, type, placeholder, required = false, disabled
   const [hasValue, setHasValue] = useState(false);
 
   return (
-    <div className="relative">
+    <div className="relative mb-6">
       <input
         id={id}
         name={name}
         type={type}
         required={required}
         disabled={disabled}
-        className="peer w-full px-4 py-3 bg-[#2a2a2a]/50 border border-gray-600 rounded-lg text-white placeholder-transparent focus:border-[#6366f1] focus:outline-none transition-colors"
+        className="peer w-full px-0 py-3 bg-transparent border-0 border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:border-[#8b5cf6] focus:outline-none transition-colors"
         placeholder={placeholder}
         onFocus={() => setFocused(true)}
         onBlur={(e) => {
@@ -44,10 +43,10 @@ const FloatingInput = ({ id, name, type, placeholder, required = false, disabled
       />
       <label
         htmlFor={id}
-        className={`absolute left-4 transition-all duration-200 pointer-events-none ${
+        className={`absolute left-0 transition-all duration-200 pointer-events-none ${
           focused || hasValue
-            ? '-top-2 text-xs text-[#6366f1] bg-[#1e1e1e] px-1'
-            : 'top-3 text-gray-400'
+            ? '-top-6 text-sm text-[#8b5cf6]'
+            : 'top-3 text-gray-500'
         }`}
       >
         {placeholder}
@@ -133,62 +132,45 @@ const AuthPage = ({ onBackToHome, onSuccess }: AuthPageProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#1a1a2e] to-[#16213e] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background decoration */}
-      <div 
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%236366f1' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }}
-      ></div>
-      
-      {/* Back button */}
-      {onBackToHome && (
-        <Button
-          onClick={onBackToHome}
-          variant="ghost"
-          className="absolute top-6 left-6 text-gray-300 hover:text-black hover:bg-white z-20"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Home
-        </Button>
-      )}
+    <div className="min-h-screen flex">
+      {/* Left Side - Form */}
+      <div className="flex-1 bg-white flex items-center justify-center p-8 relative">
+        {/* Back button */}
+        {onBackToHome && (
+          <Button
+            onClick={onBackToHome}
+            variant="ghost"
+            className="absolute top-6 left-6 text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Home
+          </Button>
+        )}
 
-      <Card className="w-full max-w-md bg-[#1e1e1e]/50 border-gray-700 shadow-2xl relative z-10 backdrop-blur-sm">
-        <div className="p-8">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] rounded-lg flex items-center justify-center">
-                <FileText className="w-6 h-6 text-white" />
-              </div>
-              <h1 className="text-3xl font-bold text-white">PDF Analyzer</h1>
-            </div>
-            <p className="text-gray-300 text-base">AI-powered document analysis</p>
-          </div>
-
+        <div className="w-full max-w-md">
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-[#2a2a2a]/50 border-gray-600">
+            <TabsList className="grid w-full grid-cols-2 bg-gray-100 mb-8">
               <TabsTrigger 
                 value="login" 
-                className="text-gray-300 data-[state=active]:bg-[#6366f1] data-[state=active]:text-white"
+                className="text-gray-600 data-[state=active]:bg-white data-[state=active]:text-[#8b5cf6] data-[state=active]:shadow-sm"
               >
-                Login
+                LOGIN
               </TabsTrigger>
               <TabsTrigger 
                 value="register" 
-                className="text-gray-300 data-[state=active]:bg-[#6366f1] data-[state=active]:text-white"
+                className="text-gray-600 data-[state=active]:bg-white data-[state=active]:text-[#8b5cf6] data-[state=active]:shadow-sm"
               >
-                Register
+                SIGN UP
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="login" className="space-y-6 mt-6">
+            <TabsContent value="login" className="mt-0">
               <form onSubmit={handleLogin} className="space-y-6">
                 <FloatingInput
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="Email"
+                  placeholder="Email Address"
                   required
                   disabled={isLoading}
                 />
@@ -200,23 +182,32 @@ const AuthPage = ({ onBackToHome, onSuccess }: AuthPageProps) => {
                   required
                   disabled={isLoading}
                 />
+                
+                <div className="flex items-center justify-between text-sm">
+                  <label className="flex items-center text-gray-600">
+                    <input type="checkbox" className="mr-2 w-4 h-4 text-[#8b5cf6] rounded border-gray-300 focus:ring-[#8b5cf6]" />
+                    Remember me
+                  </label>
+                  <a href="#" className="text-[#8b5cf6] hover:underline">Forgot your password?</a>
+                </div>
+
                 <Button 
                   type="submit" 
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#5855eb] hover:to-[#7c3aed] text-white border-0 py-6 text-base"
+                  className="w-full bg-[#8b5cf6] hover:bg-[#7c3aed] text-white py-3 rounded-full text-base font-medium mt-8"
                 >
-                  {isLoading ? "Signing in..." : "Sign In"}
+                  {isLoading ? "Signing in..." : "LOGIN"}
                 </Button>
               </form>
             </TabsContent>
 
-            <TabsContent value="register" className="space-y-6 mt-6">
+            <TabsContent value="register" className="mt-0">
               <form onSubmit={handleRegister} className="space-y-6">
                 <FloatingInput
                   id="fullName"
                   name="fullName"
                   type="text"
-                  placeholder="Name"
+                  placeholder="Full Name"
                   required
                   disabled={isLoading}
                 />
@@ -224,7 +215,7 @@ const AuthPage = ({ onBackToHome, onSuccess }: AuthPageProps) => {
                   id="reg-email"
                   name="email"
                   type="email"
-                  placeholder="Email"
+                  placeholder="Email Address"
                   required
                   disabled={isLoading}
                 />
@@ -236,18 +227,59 @@ const AuthPage = ({ onBackToHome, onSuccess }: AuthPageProps) => {
                   required
                   disabled={isLoading}
                 />
+                
                 <Button 
                   type="submit" 
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#5855eb] hover:to-[#7c3aed] text-white border-0 py-6 text-base"
+                  className="w-full bg-[#8b5cf6] hover:bg-[#7c3aed] text-white py-3 rounded-full text-base font-medium mt-8"
                 >
-                  {isLoading ? "Creating account..." : "Create Account"}
+                  {isLoading ? "Creating account..." : "SIGN UP"}
                 </Button>
               </form>
             </TabsContent>
           </Tabs>
         </div>
-      </Card>
+      </div>
+
+      {/* Right Side - Purple Gradient with Decorative Elements */}
+      <div className="flex-1 bg-gradient-to-br from-[#d946ef] via-[#8b5cf6] to-[#6366f1] relative overflow-hidden flex items-center justify-center">
+        {/* Decorative circles */}
+        <div className="absolute top-20 right-20 w-32 h-32 bg-white/10 rounded-full"></div>
+        <div className="absolute top-40 left-20 w-20 h-20 bg-white/15 rounded-full"></div>
+        <div className="absolute bottom-32 right-32 w-24 h-24 bg-white/10 rounded-full"></div>
+        <div className="absolute bottom-20 left-40 w-16 h-16 bg-white/20 rounded-full"></div>
+        
+        {/* Dotted pattern */}
+        <div className="absolute top-8 right-8">
+          <div className="grid grid-cols-8 gap-2">
+            {Array.from({ length: 32 }).map((_, i) => (
+              <div key={i} className="w-1 h-1 bg-white/30 rounded-full"></div>
+            ))}
+          </div>
+        </div>
+
+        {/* Main content */}
+        <div className="text-center text-white z-10 px-8">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+              <FileText className="w-6 h-6 text-white" />
+            </div>
+          </div>
+          
+          <h1 className="text-4xl font-bold mb-4 leading-tight">
+            Welcome to<br />
+            PDF Analyzer
+          </h1>
+          
+          <p className="text-white/90 text-lg max-w-sm mx-auto leading-relaxed">
+            AI-powered document analysis that transforms how you interact with your PDFs. Join thousands of users already analyzing smarter.
+          </p>
+        </div>
+
+        {/* Large decorative circle */}
+        <div className="absolute -top-20 -left-20 w-80 h-80 bg-gradient-to-br from-white/10 to-transparent rounded-full"></div>
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-gradient-to-tl from-white/10 to-transparent rounded-full"></div>
+      </div>
     </div>
   );
 };
