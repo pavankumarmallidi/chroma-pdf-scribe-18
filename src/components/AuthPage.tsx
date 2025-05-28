@@ -7,8 +7,14 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { FileText, ArrowLeft } from "lucide-react";
 
-const AuthPage = () => {
+interface AuthPageProps {
+  onBackToHome?: () => void;
+  onSuccess?: () => void;
+}
+
+const AuthPage = ({ onBackToHome, onSuccess }: AuthPageProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { signIn, signUp } = useAuth();
@@ -47,6 +53,7 @@ const AuthPage = () => {
         title: "Welcome back!",
         description: "You've successfully logged in.",
       });
+      onSuccess?.();
     }
     
     setIsLoading(false);
@@ -84,24 +91,46 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4 relative overflow-hidden">
-      <Card className="w-full max-w-md bg-[#1e1e1e] border-[#535353] shadow-2xl relative z-10">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#1a1a2e] to-[#16213e] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%236366f1" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+      
+      {/* Back button */}
+      {onBackToHome && (
+        <Button
+          onClick={onBackToHome}
+          variant="ghost"
+          className="absolute top-6 left-6 text-gray-300 hover:text-white z-20"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Home
+        </Button>
+      )}
+
+      <Card className="w-full max-w-md bg-[#1e1e1e]/50 border-gray-700 shadow-2xl relative z-10 backdrop-blur-sm">
         <div className="p-8">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">
-              <span className="text-[#1DB954]">
-                PDF ANALYZER
-              </span>
-            </h1>
-            <p className="text-[#b3b3b3] text-base">AI-powered document analysis</p>
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] rounded-lg flex items-center justify-center">
+                <FileText className="w-6 h-6 text-white" />
+              </div>
+              <h1 className="text-3xl font-bold text-white">PDF Analyzer</h1>
+            </div>
+            <p className="text-gray-300 text-base">AI-powered document analysis</p>
           </div>
 
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-[#2a2a2a] border-[#535353]">
-              <TabsTrigger value="login" className="text-[#b3b3b3] data-[state=active]:bg-[#1DB954] data-[state=active]:text-white">
+            <TabsList className="grid w-full grid-cols-2 bg-[#2a2a2a]/50 border-gray-600">
+              <TabsTrigger 
+                value="login" 
+                className="text-gray-300 data-[state=active]:bg-[#6366f1] data-[state=active]:text-white"
+              >
                 Login
               </TabsTrigger>
-              <TabsTrigger value="register" className="text-[#b3b3b3] data-[state=active]:bg-[#1DB954] data-[state=active]:text-white">
+              <TabsTrigger 
+                value="register" 
+                className="text-gray-300 data-[state=active]:bg-[#6366f1] data-[state=active]:text-white"
+              >
                 Register
               </TabsTrigger>
             </TabsList>
@@ -116,7 +145,7 @@ const AuthPage = () => {
                     type="email"
                     required
                     disabled={isLoading}
-                    className="bg-[#2a2a2a] border-[#535353] text-white placeholder:text-[#b3b3b3] focus:border-[#1DB954] text-sm"
+                    className="bg-[#2a2a2a]/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-[#6366f1] text-sm"
                     placeholder="Enter your email"
                   />
                 </div>
@@ -128,14 +157,14 @@ const AuthPage = () => {
                     type="password"
                     required
                     disabled={isLoading}
-                    className="bg-[#2a2a2a] border-[#535353] text-white placeholder:text-[#b3b3b3] focus:border-[#1DB954] text-sm"
+                    className="bg-[#2a2a2a]/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-[#6366f1] text-sm"
                     placeholder="Enter your password"
                   />
                 </div>
                 <Button 
                   type="submit" 
                   disabled={isLoading}
-                  className="w-full bg-[#1DB954] hover:bg-[#1ed760] text-white border-0 py-6 text-base"
+                  className="w-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#5855eb] hover:to-[#7c3aed] text-white border-0 py-6 text-base"
                 >
                   {isLoading ? "Signing in..." : "Sign In"}
                 </Button>
@@ -152,7 +181,7 @@ const AuthPage = () => {
                     type="text"
                     required
                     disabled={isLoading}
-                    className="bg-[#2a2a2a] border-[#535353] text-white placeholder:text-[#b3b3b3] focus:border-[#1DB954] text-sm"
+                    className="bg-[#2a2a2a]/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-[#6366f1] text-sm"
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -164,7 +193,7 @@ const AuthPage = () => {
                     type="email"
                     required
                     disabled={isLoading}
-                    className="bg-[#2a2a2a] border-[#535353] text-white placeholder:text-[#b3b3b3] focus:border-[#1DB954] text-sm"
+                    className="bg-[#2a2a2a]/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-[#6366f1] text-sm"
                     placeholder="Enter your email"
                   />
                 </div>
@@ -176,14 +205,14 @@ const AuthPage = () => {
                     type="password"
                     required
                     disabled={isLoading}
-                    className="bg-[#2a2a2a] border-[#535353] text-white placeholder:text-[#b3b3b3] focus:border-[#1DB954] text-sm"
+                    className="bg-[#2a2a2a]/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-[#6366f1] text-sm"
                     placeholder="Create a password"
                   />
                 </div>
                 <Button 
                   type="submit" 
                   disabled={isLoading}
-                  className="w-full bg-[#1DB954] hover:bg-[#1ed760] text-white border-0 py-6 text-base"
+                  className="w-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#5855eb] hover:to-[#7c3aed] text-white border-0 py-6 text-base"
                 >
                   {isLoading ? "Creating account..." : "Create Account"}
                 </Button>
