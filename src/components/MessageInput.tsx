@@ -19,16 +19,16 @@ const MessageInput = ({ inputMessage, setInputMessage, onSendMessage, isLoading 
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             placeholder="Ask anything about your PDF..."
-            className="bg-[#2a2a2a]/70 border-gray-600/30 text-white placeholder:text-gray-400 focus:border-[#6366f1] focus:ring-[#6366f1]/20 text-sm rounded-lg sm:rounded-xl backdrop-blur-sm transition-all duration-300"
+            className="bg-[#2a2a2a]/70 border-gray-600/30 text-white placeholder:text-gray-400 focus:border-[#6366f1] focus:ring-[#6366f1]/20 text-sm rounded-lg sm:rounded-xl backdrop-blur-sm transition-all duration-300 hover:border-gray-500/50"
             disabled={isLoading}
           />
         </div>
         <Button
           type="submit"
           disabled={isLoading || !inputMessage.trim()}
-          className="bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#5855eb] hover:to-[#7c3aed] text-white border-0 px-4 sm:px-6 rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
+          className="bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#5855eb] hover:to-[#7c3aed] text-white border-0 px-4 sm:px-6 rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 hover:scale-105 active:scale-95"
         >
-          <Send className="w-4 h-4" />
+          <Send className={`w-4 h-4 transition-transform duration-200 ${isLoading ? 'animate-spin' : ''}`} />
         </Button>
       </form>
       

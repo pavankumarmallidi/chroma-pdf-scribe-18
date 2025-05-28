@@ -1,6 +1,7 @@
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Bot, User, Sparkles } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 interface Message {
   id: string;
@@ -13,16 +14,29 @@ interface Message {
 interface MessageListProps {
   messages: Message[];
   isLoading: boolean;
+  messagesEndRef?: React.RefObject<HTMLDivElement>;
 }
 
-const MessageList = ({ messages, isLoading }: MessageListProps) => {
+const MessageList = ({ messages, isLoading, messagesEndRef }: MessageListProps) => {
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when new messages are added
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
+    }
+  }, [messages, isLoading]);
+
   return (
-    <ScrollArea className="flex-1 p-4 sm:p-6 min-h-0">
+    <ScrollArea ref={scrollAreaRef} className="flex-1 p-4 sm:p-6 min-h-0">
       <div className="space-y-4 sm:space-y-6">
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.isUser ? 'justify-end' : 'justify-start'} items-start gap-2 sm:gap-4`}
+            className={`flex ${message.isUser ? 'justify-end' : 'justify-start'} items-start gap-2 sm:gap-4 animate-fade-in`}
           >
             {!message.isUser && (
               <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center flex-shrink-0 shadow-lg">
@@ -35,7 +49,7 @@ const MessageList = ({ messages, isLoading }: MessageListProps) => {
                 message.isUser
                   ? 'bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white rounded-l-xl sm:rounded-l-2xl rounded-tr-xl sm:rounded-tr-2xl shadow-lg'
                   : 'bg-[#2a2a2a]/70 text-white rounded-r-xl sm:rounded-r-2xl rounded-tl-xl sm:rounded-tl-2xl border border-gray-600/30 backdrop-blur-sm shadow-lg'
-              } p-3 sm:p-4 transition-all duration-300 hover:shadow-xl`}
+              } p-3 sm:p-4 transition-all duration-300 hover:shadow-xl hover:scale-[1.02]`}
             >
               <p className="text-xs sm:text-sm leading-relaxed mb-2">{message.text}</p>
               
@@ -64,7 +78,7 @@ const MessageList = ({ messages, isLoading }: MessageListProps) => {
         ))}
         
         {isLoading && (
-          <div className="flex justify-start items-start gap-2 sm:gap-4">
+          <div className="flex justify-start items-start gap-2 sm:gap-4 animate-fade-in">
             <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center shadow-lg">
               <Bot className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
             </div>
@@ -77,6 +91,9 @@ const MessageList = ({ messages, isLoading }: MessageListProps) => {
             </div>
           </div>
         )}
+        
+        {/* Invisible div for auto-scrolling */}
+        <div ref={messagesEndRef} />
       </div>
     </ScrollArea>
   );

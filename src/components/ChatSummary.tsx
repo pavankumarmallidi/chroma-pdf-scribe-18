@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Home, FileText } from "lucide-react";
@@ -44,6 +44,16 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when new messages are added
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,9 +143,9 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Main Content - Fixed height to fit screen better */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-4 sm:pb-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6" style={{ height: 'calc(100vh - 140px)' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 h-[calc(100vh-180px)]">
           
           {/* Document Analysis Sidebar */}
           <DocumentSidebar pdfAnalysisData={pdfAnalysisData} />
@@ -144,7 +154,11 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
           <div className="lg:col-span-3 order-1 lg:order-2">
             <Card className="bg-[#1e1e1e]/50 border-gray-700 shadow-2xl backdrop-blur-sm h-full flex flex-col">
               <ChatHeader />
-              <MessageList messages={messages} isLoading={isLoading} />
+              <MessageList 
+                messages={messages} 
+                isLoading={isLoading} 
+                messagesEndRef={messagesEndRef}
+              />
               <MessageInput
                 inputMessage={inputMessage}
                 setInputMessage={setInputMessage}
