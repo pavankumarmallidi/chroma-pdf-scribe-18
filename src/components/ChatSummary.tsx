@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Home, FileText } from "lucide-react";
+import { Send, Home, FileText, Sparkles, Bot, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Message {
@@ -14,16 +14,23 @@ interface Message {
   timestamp: Date;
 }
 
-interface ChatSummaryProps {
-  onBackToHome: () => void;
-  pdfSummary?: string;
+interface PdfAnalysisData {
+  summary: string;
+  totalPages: number;
+  totalWords: number;
+  language: string;
 }
 
-const ChatSummary = ({ onBackToHome, pdfSummary = "Your PDF has been successfully processed and analyzed." }: ChatSummaryProps) => {
+interface ChatSummaryProps {
+  onBackToHome: () => void;
+  pdfAnalysisData: PdfAnalysisData;
+}
+
+const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      text: "Welcome to PDF CONTENT EXTRACTOR. We've analyzed your PDF. You can ask me questions about it.",
+      text: "Welcome! I've successfully analyzed your PDF document. I can answer any questions you have about its content. What would you like to know?",
       isUser: false,
       timestamp: new Date(),
     },
@@ -51,7 +58,7 @@ const ChatSummary = ({ onBackToHome, pdfSummary = "Your PDF has been successfull
     setTimeout(() => {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: "Thank you for your question. I've analyzed your PDF and here's what I found...",
+        text: "Based on your PDF analysis, I can help you understand the key concepts and details from your document. Could you be more specific about what aspect you'd like me to elaborate on?",
         isUser: false,
         timestamp: new Date(),
       };
@@ -61,85 +68,121 @@ const ChatSummary = ({ onBackToHome, pdfSummary = "Your PDF has been successfull
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-teal-900 relative">
-      <div 
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }}
-      ></div>
+    <div className="min-h-screen bg-black relative overflow-hidden">
+      {/* Netflix-style background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-red-900/20 via-black to-black"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-900/10 to-blue-900/10"></div>
       
       <div className="relative z-10 p-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-white bg-gradient-to-r from-teal-300 to-purple-300 bg-clip-text text-transparent">
-              PDF Analysis Results
+            <h1 className="text-3xl font-bold text-white">
+              <span className="bg-gradient-to-r from-red-500 to-purple-500 bg-clip-text text-transparent">
+                PDF Analysis Complete
+              </span>
             </h1>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Summary Panel */}
+            {/* Enhanced Summary Panel */}
             <div className="lg:col-span-1">
-              <Card className="backdrop-blur-lg bg-white/10 border-white/20 shadow-2xl h-fit">
+              <Card className="bg-gray-900/90 border-gray-700 shadow-2xl backdrop-blur-sm h-fit">
                 <div className="p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <FileText className="w-5 h-5 text-teal-400" />
-                    <h2 className="text-xl font-semibold text-white">PDF Summary</h2>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-purple-500 flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-white" />
+                    </div>
+                    <h2 className="text-xl font-bold text-white">Document Analysis</h2>
                   </div>
-                  <div className="text-white/90 space-y-3">
-                    <p className="text-sm leading-relaxed">
-                      {pdfSummary}
-                    </p>
-                    <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-                      <p className="text-xs text-white/70 mb-1">Document Stats:</p>
-                      <ul className="text-sm space-y-1">
-                        <li>• Pages: 12</li>
-                        <li>• Words: ~2,400</li>
-                        <li>• Language: English</li>
-                      </ul>
+                  
+                  <div className="space-y-4">
+                    <div className="p-4 rounded-lg bg-gradient-to-r from-red-500/10 to-purple-500/10 border border-red-500/20">
+                      <h3 className="text-red-400 font-semibold mb-2">Summary</h3>
+                      <p className="text-gray-300 text-sm leading-relaxed">
+                        {pdfAnalysisData.summary}
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                        <p className="text-gray-400 text-xs mb-1">Pages</p>
+                        <p className="text-red-400 font-bold text-lg">{pdfAnalysisData.totalPages}</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                        <p className="text-gray-400 text-xs mb-1">Words</p>
+                        <p className="text-purple-400 font-bold text-lg">{pdfAnalysisData.totalWords.toLocaleString()}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                      <p className="text-gray-400 text-xs mb-1">Language</p>
+                      <p className="text-blue-400 font-semibold">{pdfAnalysisData.language}</p>
                     </div>
                   </div>
                 </div>
               </Card>
             </div>
 
-            {/* Chat Panel */}
+            {/* Enhanced Chat Panel */}
             <div className="lg:col-span-2">
-              <Card className="backdrop-blur-lg bg-white/10 border-white/20 shadow-2xl h-[600px] flex flex-col">
-                <div className="p-4 border-b border-white/10">
-                  <h2 className="text-lg font-semibold text-white">Chat with your PDF</h2>
-                  <p className="text-sm text-white/70">Ask questions about your document</p>
+              <Card className="bg-gray-900/90 border-gray-700 shadow-2xl backdrop-blur-sm h-[600px] flex flex-col">
+                <div className="p-6 border-b border-gray-700">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-red-500 to-purple-500 flex items-center justify-center">
+                      <Sparkles className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-bold text-white">AI Assistant</h2>
+                      <p className="text-sm text-gray-400">Ask questions about your document</p>
+                    </div>
+                  </div>
                 </div>
 
-                <ScrollArea className="flex-1 p-4">
-                  <div className="space-y-4">
+                <ScrollArea className="flex-1 p-6">
+                  <div className="space-y-6">
                     {messages.map((message) => (
                       <div
                         key={message.id}
-                        className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+                        className={`flex ${message.isUser ? 'justify-end' : 'justify-start'} items-start gap-3`}
                       >
+                        {!message.isUser && (
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-red-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                            <Bot className="w-4 h-4 text-white" />
+                          </div>
+                        )}
+                        
                         <div
-                          className={`max-w-[70%] p-3 rounded-lg ${
+                          className={`max-w-[75%] ${
                             message.isUser
-                              ? 'bg-gradient-to-r from-teal-500 to-purple-600 text-white'
-                              : 'backdrop-blur-sm bg-white/20 text-white border border-white/20'
-                          }`}
+                              ? 'bg-gradient-to-r from-red-600 to-purple-600 text-white rounded-l-2xl rounded-tr-2xl'
+                              : 'bg-gray-800 text-gray-100 rounded-r-2xl rounded-tl-2xl border border-gray-700'
+                          } p-4 shadow-lg`}
                         >
-                          <p className="text-sm">{message.text}</p>
-                          <p className="text-xs opacity-70 mt-1">
-                            {message.timestamp.toLocaleTimeString()}
+                          <p className="text-sm leading-relaxed">{message.text}</p>
+                          <p className="text-xs opacity-70 mt-2">
+                            {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>
+                        
+                        {message.isUser && (
+                          <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0">
+                            <User className="w-4 h-4 text-gray-300" />
+                          </div>
+                        )}
                       </div>
                     ))}
+                    
                     {isLoading && (
-                      <div className="flex justify-start">
-                        <div className="backdrop-blur-sm bg-white/20 text-white border border-white/20 p-3 rounded-lg">
+                      <div className="flex justify-start items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-red-500 to-purple-500 flex items-center justify-center">
+                          <Bot className="w-4 h-4 text-white" />
+                        </div>
+                        <div className="bg-gray-800 border border-gray-700 p-4 rounded-r-2xl rounded-tl-2xl">
                           <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                            <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                            <div className="w-2 h-2 bg-red-400 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                           </div>
                         </div>
                       </div>
@@ -147,19 +190,19 @@ const ChatSummary = ({ onBackToHome, pdfSummary = "Your PDF has been successfull
                   </div>
                 </ScrollArea>
 
-                <div className="p-4 border-t border-white/10">
-                  <form onSubmit={handleSendMessage} className="flex gap-2">
+                <div className="p-6 border-t border-gray-700">
+                  <form onSubmit={handleSendMessage} className="flex gap-3">
                     <Input
                       value={inputMessage}
                       onChange={(e) => setInputMessage(e.target.value)}
-                      placeholder="Ask a question about your PDF..."
-                      className="flex-1 backdrop-blur-sm bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                      placeholder="Ask anything about your PDF..."
+                      className="flex-1 bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500"
                       disabled={isLoading}
                     />
                     <Button
                       type="submit"
                       disabled={isLoading || !inputMessage.trim()}
-                      className="bg-gradient-to-r from-teal-500 to-purple-600 hover:from-teal-600 hover:to-purple-700 text-white border-0"
+                      className="bg-gradient-to-r from-red-600 to-purple-600 hover:from-red-700 hover:to-purple-700 text-white border-0 px-6"
                     >
                       <Send className="w-4 h-4" />
                     </Button>
@@ -173,7 +216,7 @@ const ChatSummary = ({ onBackToHome, pdfSummary = "Your PDF has been successfull
           <div className="fixed bottom-6 right-6">
             <Button
               onClick={onBackToHome}
-              className="backdrop-blur-lg bg-white/10 border-white/20 text-white hover:bg-white/20 shadow-2xl"
+              className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700 shadow-2xl backdrop-blur-sm"
             >
               <Home className="w-4 h-4 mr-2" />
               Back to Home

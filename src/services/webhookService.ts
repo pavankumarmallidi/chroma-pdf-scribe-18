@@ -1,10 +1,11 @@
+
 /**
  * Service for handling PDF uploads to n8n webhook
  */
 export const uploadToWebhook = async (
   file: File,
   onProgress: (progress: number) => void
-): Promise<void> => {
+): Promise<any> => {
   return new Promise((resolve, reject) => {
     const formData = new FormData();
     formData.append('pdf', file);
@@ -27,8 +28,12 @@ export const uploadToWebhook = async (
           throw new Error(`HTTP error! status: ${response.status}`);
         }
       }
+      
+      const responseData = await response.json();
+      console.log('Webhook response:', responseData);
+      
       onProgress(100);
-      resolve();
+      resolve(responseData);
     })
     .catch(reject);
 

@@ -30,7 +30,6 @@ const AuthPage = () => {
       
       let errorMessage = error.message;
       
-      // Handle specific error cases
       if (error.message.includes('email_not_confirmed')) {
         errorMessage = "Please check your email and click the confirmation link before logging in.";
       } else if (error.message.includes('Invalid login credentials')) {
@@ -85,29 +84,28 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-teal-900 flex items-center justify-center p-4">
-      <div 
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }}
-      ></div>
+    <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Netflix-style background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-red-900/20 via-black to-black"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-900/10 to-blue-900/10"></div>
       
-      <Card className="w-full max-w-md backdrop-blur-lg bg-white/10 border-white/20 shadow-2xl">
+      <Card className="w-full max-w-md bg-gray-900/90 border-gray-700 shadow-2xl backdrop-blur-sm relative z-10">
         <div className="p-8">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2 bg-gradient-to-r from-teal-300 to-purple-300 bg-clip-text text-transparent">
-              PDF CONTENT EXTRACTOR
+            <h1 className="text-4xl font-bold text-white mb-2">
+              <span className="bg-gradient-to-r from-red-500 to-purple-500 bg-clip-text text-transparent">
+                PDF ANALYZER
+              </span>
             </h1>
-            <p className="text-white/80">Extract insights from your PDFs</p>
+            <p className="text-gray-300">AI-powered document analysis</p>
           </div>
 
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 backdrop-blur-sm bg-white/10 border-white/20">
-              <TabsTrigger value="login" className="text-white data-[state=active]:bg-white/20">
+            <TabsList className="grid w-full grid-cols-2 bg-gray-800 border-gray-700">
+              <TabsTrigger value="login" className="text-gray-300 data-[state=active]:bg-red-600 data-[state=active]:text-white">
                 Login
               </TabsTrigger>
-              <TabsTrigger value="register" className="text-white data-[state=active]:bg-white/20">
+              <TabsTrigger value="register" className="text-gray-300 data-[state=active]:bg-red-600 data-[state=active]:text-white">
                 Register
               </TabsTrigger>
             </TabsList>
@@ -122,7 +120,7 @@ const AuthPage = () => {
                     type="email"
                     required
                     disabled={isLoading}
-                    className="backdrop-blur-sm bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                    className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500"
                     placeholder="Enter your email"
                   />
                 </div>
@@ -134,14 +132,14 @@ const AuthPage = () => {
                     type="password"
                     required
                     disabled={isLoading}
-                    className="backdrop-blur-sm bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                    className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500"
                     placeholder="Enter your password"
                   />
                 </div>
                 <Button 
                   type="submit" 
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-teal-500 to-purple-600 hover:from-teal-600 hover:to-purple-700 text-white border-0"
+                  className="w-full bg-gradient-to-r from-red-600 to-purple-600 hover:from-red-700 hover:to-purple-700 text-white border-0 py-6"
                 >
                   {isLoading ? "Signing in..." : "Sign In"}
                 </Button>
@@ -158,7 +156,7 @@ const AuthPage = () => {
                     type="text"
                     required
                     disabled={isLoading}
-                    className="backdrop-blur-sm bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                    className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500"
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -170,7 +168,7 @@ const AuthPage = () => {
                     type="email"
                     required
                     disabled={isLoading}
-                    className="backdrop-blur-sm bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                    className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500"
                     placeholder="Enter your email"
                   />
                 </div>
@@ -182,14 +180,14 @@ const AuthPage = () => {
                     type="password"
                     required
                     disabled={isLoading}
-                    className="backdrop-blur-sm bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                    className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500"
                     placeholder="Create a password"
                   />
                 </div>
                 <Button 
                   type="submit" 
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-purple-500 to-teal-600 hover:from-purple-600 hover:to-teal-700 text-white border-0"
+                  className="w-full bg-gradient-to-r from-purple-600 to-red-600 hover:from-purple-700 hover:to-red-700 text-white border-0 py-6"
                 >
                   {isLoading ? "Creating account..." : "Create Account"}
                 </Button>
