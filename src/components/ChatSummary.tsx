@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Home, FileText, Sparkles, Bot, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { sendChatMessage } from "@/services/chatService";
 
 interface Message {
   id: string;
@@ -27,6 +29,7 @@ interface ChatSummaryProps {
 }
 
 const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -41,7 +44,7 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputMessage.trim()) return;
+    if (!inputMessage.trim() || !user?.email) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -51,34 +54,40 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const messageToSend = inputMessage;
     setInputMessage("");
     setIsLoading(true);
 
-    // TODO: Replace with actual Webhook Trigger 2 call
-    setTimeout(() => {
+    try {
+      const response = await sendChatMessage(messageToSend, user.email);
+      
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: "Based on your PDF analysis, I can help you understand the key concepts and details from your document. Could you be more specific about what aspect you'd like me to elaborate on?",
+        text: response?.message || "Based on your PDF analysis, I can help you understand the key concepts and details from your document. Could you be more specific about what aspect you'd like me to elaborate on?",
         isUser: false,
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, botResponse]);
+    } catch (error) {
+      console.error("Chat message failed:", error);
+      toast({
+        title: "Message failed",
+        description: "Unable to send message. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
-      {/* Netflix-style background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-red-900/20 via-black to-black"></div>
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-900/10 to-blue-900/10"></div>
-      
+    <div className="min-h-screen bg-[#121212] relative overflow-hidden">
       <div className="relative z-10 p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-white">
-              <span className="bg-gradient-to-r from-red-500 to-purple-500 bg-clip-text text-transparent">
+              <span className="text-[#1DB954]">
                 PDF Analysis Complete
               </span>
             </h1>
@@ -87,37 +96,37 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Enhanced Summary Panel */}
             <div className="lg:col-span-1">
-              <Card className="bg-gray-900/90 border-gray-700 shadow-2xl backdrop-blur-sm h-fit">
+              <Card className="bg-[#1e1e1e] border-[#535353] shadow-2xl h-fit">
                 <div className="p-6">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-purple-500 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-[#1DB954] flex items-center justify-center">
                       <FileText className="w-5 h-5 text-white" />
                     </div>
                     <h2 className="text-xl font-bold text-white">Document Analysis</h2>
                   </div>
                   
                   <div className="space-y-4">
-                    <div className="p-4 rounded-lg bg-gradient-to-r from-red-500/10 to-purple-500/10 border border-red-500/20">
-                      <h3 className="text-red-400 font-semibold mb-2">Summary</h3>
-                      <p className="text-gray-300 text-sm leading-relaxed">
+                    <div className="p-4 rounded-lg bg-[#2a2a2a] border border-[#535353]">
+                      <h3 className="text-[#1DB954] font-semibold mb-2 text-base">Summary</h3>
+                      <p className="text-[#b3b3b3] text-sm leading-relaxed">
                         {pdfAnalysisData.summary}
                       </p>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-3">
-                      <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
-                        <p className="text-gray-400 text-xs mb-1">Pages</p>
-                        <p className="text-red-400 font-bold text-lg">{pdfAnalysisData.totalPages}</p>
+                      <div className="p-3 rounded-lg bg-[#2a2a2a] border border-[#535353]">
+                        <p className="text-[#b3b3b3] text-xs mb-1">Pages</p>
+                        <p className="text-[#1DB954] font-bold text-lg">{pdfAnalysisData.totalPages}</p>
                       </div>
-                      <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
-                        <p className="text-gray-400 text-xs mb-1">Words</p>
-                        <p className="text-purple-400 font-bold text-lg">{pdfAnalysisData.totalWords.toLocaleString()}</p>
+                      <div className="p-3 rounded-lg bg-[#2a2a2a] border border-[#535353]">
+                        <p className="text-[#b3b3b3] text-xs mb-1">Words</p>
+                        <p className="text-white font-bold text-lg">{pdfAnalysisData.totalWords.toLocaleString()}</p>
                       </div>
                     </div>
                     
-                    <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
-                      <p className="text-gray-400 text-xs mb-1">Language</p>
-                      <p className="text-blue-400 font-semibold">{pdfAnalysisData.language}</p>
+                    <div className="p-3 rounded-lg bg-[#2a2a2a] border border-[#535353]">
+                      <p className="text-[#b3b3b3] text-xs mb-1">Language</p>
+                      <p className="text-white font-semibold">{pdfAnalysisData.language}</p>
                     </div>
                   </div>
                 </div>
@@ -126,15 +135,15 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
 
             {/* Enhanced Chat Panel */}
             <div className="lg:col-span-2">
-              <Card className="bg-gray-900/90 border-gray-700 shadow-2xl backdrop-blur-sm h-[600px] flex flex-col">
-                <div className="p-6 border-b border-gray-700">
+              <Card className="bg-[#1e1e1e] border-[#535353] shadow-2xl h-[600px] flex flex-col">
+                <div className="p-6 border-b border-[#535353]">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-red-500 to-purple-500 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-[#1DB954] flex items-center justify-center">
                       <Sparkles className="w-4 h-4 text-white" />
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-white">AI Assistant</h2>
-                      <p className="text-sm text-gray-400">Ask questions about your document</p>
+                      <p className="text-sm text-[#b3b3b3]">Ask questions about your document</p>
                     </div>
                   </div>
                 </div>
@@ -147,7 +156,7 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
                         className={`flex ${message.isUser ? 'justify-end' : 'justify-start'} items-start gap-3`}
                       >
                         {!message.isUser && (
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-red-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                          <div className="w-8 h-8 rounded-full bg-[#1DB954] flex items-center justify-center flex-shrink-0">
                             <Bot className="w-4 h-4 text-white" />
                           </div>
                         )}
@@ -155,19 +164,19 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
                         <div
                           className={`max-w-[75%] ${
                             message.isUser
-                              ? 'bg-gradient-to-r from-red-600 to-purple-600 text-white rounded-l-2xl rounded-tr-2xl'
-                              : 'bg-gray-800 text-gray-100 rounded-r-2xl rounded-tl-2xl border border-gray-700'
+                              ? 'bg-[#1DB954] text-white rounded-l-2xl rounded-tr-2xl'
+                              : 'bg-[#2a2a2a] text-white rounded-r-2xl rounded-tl-2xl border border-[#535353]'
                           } p-4 shadow-lg`}
                         >
-                          <p className="text-sm leading-relaxed">{message.text}</p>
+                          <p className="text-base leading-relaxed">{message.text}</p>
                           <p className="text-xs opacity-70 mt-2">
                             {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>
                         
                         {message.isUser && (
-                          <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0">
-                            <User className="w-4 h-4 text-gray-300" />
+                          <div className="w-8 h-8 rounded-full bg-[#535353] flex items-center justify-center flex-shrink-0">
+                            <User className="w-4 h-4 text-white" />
                           </div>
                         )}
                       </div>
@@ -175,14 +184,14 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
                     
                     {isLoading && (
                       <div className="flex justify-start items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-red-500 to-purple-500 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-[#1DB954] flex items-center justify-center">
                           <Bot className="w-4 h-4 text-white" />
                         </div>
-                        <div className="bg-gray-800 border border-gray-700 p-4 rounded-r-2xl rounded-tl-2xl">
+                        <div className="bg-[#2a2a2a] border border-[#535353] p-4 rounded-r-2xl rounded-tl-2xl">
                           <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-red-400 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                            <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                            <div className="w-2 h-2 bg-[#1DB954] rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-[#1DB954] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                           </div>
                         </div>
                       </div>
@@ -190,19 +199,19 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
                   </div>
                 </ScrollArea>
 
-                <div className="p-6 border-t border-gray-700">
+                <div className="p-6 border-t border-[#535353]">
                   <form onSubmit={handleSendMessage} className="flex gap-3">
                     <Input
                       value={inputMessage}
                       onChange={(e) => setInputMessage(e.target.value)}
                       placeholder="Ask anything about your PDF..."
-                      className="flex-1 bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500"
+                      className="flex-1 bg-[#2a2a2a] border-[#535353] text-white placeholder:text-[#b3b3b3] focus:border-[#1DB954] text-sm"
                       disabled={isLoading}
                     />
                     <Button
                       type="submit"
                       disabled={isLoading || !inputMessage.trim()}
-                      className="bg-gradient-to-r from-red-600 to-purple-600 hover:from-red-700 hover:to-purple-700 text-white border-0 px-6"
+                      className="bg-[#1DB954] hover:bg-[#1ed760] text-white border-0 px-6"
                     >
                       <Send className="w-4 h-4" />
                     </Button>
@@ -216,7 +225,7 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
           <div className="fixed bottom-6 right-6">
             <Button
               onClick={onBackToHome}
-              className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700 shadow-2xl backdrop-blur-sm"
+              className="bg-[#535353] border-[#535353] text-white hover:bg-[#1DB954] shadow-2xl"
             >
               <Home className="w-4 h-4 mr-2" />
               Back to Home

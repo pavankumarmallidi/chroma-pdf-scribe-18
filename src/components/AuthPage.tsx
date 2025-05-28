@@ -84,28 +84,24 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Netflix-style background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-red-900/20 via-black to-black"></div>
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-900/10 to-blue-900/10"></div>
-      
-      <Card className="w-full max-w-md bg-gray-900/90 border-gray-700 shadow-2xl backdrop-blur-sm relative z-10">
+    <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4 relative overflow-hidden">
+      <Card className="w-full max-w-md bg-[#1e1e1e] border-[#535353] shadow-2xl relative z-10">
         <div className="p-8">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-white mb-2">
-              <span className="bg-gradient-to-r from-red-500 to-purple-500 bg-clip-text text-transparent">
+              <span className="text-[#1DB954]">
                 PDF ANALYZER
               </span>
             </h1>
-            <p className="text-gray-300">AI-powered document analysis</p>
+            <p className="text-[#b3b3b3] text-base">AI-powered document analysis</p>
           </div>
 
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-gray-800 border-gray-700">
-              <TabsTrigger value="login" className="text-gray-300 data-[state=active]:bg-red-600 data-[state=active]:text-white">
+            <TabsList className="grid w-full grid-cols-2 bg-[#2a2a2a] border-[#535353]">
+              <TabsTrigger value="login" className="text-[#b3b3b3] data-[state=active]:bg-[#1DB954] data-[state=active]:text-white">
                 Login
               </TabsTrigger>
-              <TabsTrigger value="register" className="text-gray-300 data-[state=active]:bg-red-600 data-[state=active]:text-white">
+              <TabsTrigger value="register" className="text-[#b3b3b3] data-[state=active]:bg-[#1DB954] data-[state=active]:text-white">
                 Register
               </TabsTrigger>
             </TabsList>
@@ -113,33 +109,33 @@ const AuthPage = () => {
             <TabsContent value="login" className="space-y-4 mt-6">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-white">Email</Label>
+                  <Label htmlFor="email" className="text-white text-base">Email</Label>
                   <Input
                     id="email"
                     name="email"
                     type="email"
                     required
                     disabled={isLoading}
-                    className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500"
+                    className="bg-[#2a2a2a] border-[#535353] text-white placeholder:text-[#b3b3b3] focus:border-[#1DB954] text-sm"
                     placeholder="Enter your email"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-white">Password</Label>
+                  <Label htmlFor="password" className="text-white text-base">Password</Label>
                   <Input
                     id="password"
                     name="password"
                     type="password"
                     required
                     disabled={isLoading}
-                    className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500"
+                    className="bg-[#2a2a2a] border-[#535353] text-white placeholder:text-[#b3b3b3] focus:border-[#1DB954] text-sm"
                     placeholder="Enter your password"
                   />
                 </div>
                 <Button 
                   type="submit" 
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-red-600 to-purple-600 hover:from-red-700 hover:to-purple-700 text-white border-0 py-6"
+                  className="w-full bg-[#1DB954] hover:bg-[#1ed760] text-white border-0 py-6 text-base"
                 >
                   {isLoading ? "Signing in..." : "Sign In"}
                 </Button>
@@ -149,45 +145,45 @@ const AuthPage = () => {
             <TabsContent value="register" className="space-y-4 mt-6">
               <form onSubmit={handleRegister} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName" className="text-white">Full Name</Label>
+                  <Label htmlFor="fullName" className="text-white text-base">Full Name</Label>
                   <Input
                     id="fullName"
                     name="fullName"
                     type="text"
                     required
                     disabled={isLoading}
-                    className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500"
+                    className="bg-[#2a2a2a] border-[#535353] text-white placeholder:text-[#b3b3b3] focus:border-[#1DB954] text-sm"
                     placeholder="Enter your full name"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="reg-email" className="text-white">Email</Label>
+                  <Label htmlFor="reg-email" className="text-white text-base">Email</Label>
                   <Input
                     id="reg-email"
                     name="email"
                     type="email"
                     required
                     disabled={isLoading}
-                    className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500"
+                    className="bg-[#2a2a2a] border-[#535353] text-white placeholder:text-[#b3b3b3] focus:border-[#1DB954] text-sm"
                     placeholder="Enter your email"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="reg-password" className="text-white">Password</Label>
+                  <Label htmlFor="reg-password" className="text-white text-base">Password</Label>
                   <Input
                     id="reg-password"
                     name="password"
                     type="password"
                     required
                     disabled={isLoading}
-                    className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus:border-red-500"
+                    className="bg-[#2a2a2a] border-[#535353] text-white placeholder:text-[#b3b3b3] focus:border-[#1DB954] text-sm"
                     placeholder="Create a password"
                   />
                 </div>
                 <Button 
                   type="submit" 
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-purple-600 to-red-600 hover:from-purple-700 hover:to-red-700 text-white border-0 py-6"
+                  className="w-full bg-[#1DB954] hover:bg-[#1ed760] text-white border-0 py-6 text-base"
                 >
                   {isLoading ? "Creating account..." : "Create Account"}
                 </Button>
