@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send } from "lucide-react";
+import { Send, Loader2 } from "lucide-react";
 
 interface MessageInputProps {
   inputMessage: string;
@@ -11,28 +11,44 @@ interface MessageInputProps {
 }
 
 const MessageInput = ({ inputMessage, setInputMessage, onSendMessage, isLoading }: MessageInputProps) => {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (!isLoading && inputMessage.trim()) {
+        onSendMessage(e as any);
+      }
+    }
+  };
+
   return (
-    <div className="p-4 sm:p-6 border-t border-gray-700/50 flex-shrink-0">
-      <form onSubmit={onSendMessage} className="flex gap-2 sm:gap-3">
+    <div className="p-6 backdrop-blur-sm bg-white/5 border-t border-white/10">
+      <form onSubmit={onSendMessage} className="flex gap-3 items-end">
         <div className="flex-1 relative">
           <Input
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
+            onKeyPress={handleKeyPress}
             placeholder="Ask anything about your PDF..."
-            className="bg-[#2a2a2a]/70 border-gray-600/30 text-white placeholder:text-gray-400 focus:border-[#6366f1] focus:ring-[#6366f1]/20 text-sm rounded-lg sm:rounded-xl backdrop-blur-sm transition-all duration-300 hover:border-gray-500/50"
+            className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 rounded-2xl px-4 py-3 text-sm resize-none transition-all duration-300 hover:border-white/30 focus:bg-white/15"
             disabled={isLoading}
+            rows={1}
+            style={{ minHeight: '48px' }}
           />
         </div>
         <Button
           type="submit"
           disabled={isLoading || !inputMessage.trim()}
-          className="bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#5855eb] hover:to-[#7c3aed] text-white border-0 px-4 sm:px-6 rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 hover:scale-105 active:scale-95"
+          className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 px-4 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 hover:scale-105 active:scale-95 min-w-[48px] h-12"
         >
-          <Send className={`w-4 h-4 transition-transform duration-200 ${isLoading ? 'animate-spin' : ''}`} />
+          {isLoading ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Send className="w-4 h-4" />
+          )}
         </Button>
       </form>
       
-      <p className="text-center text-xs text-gray-500 mt-2 sm:mt-3">
+      <p className="text-center text-xs text-gray-400 mt-3 opacity-70">
         AI can make mistakes. Please verify important information.
       </p>
     </div>

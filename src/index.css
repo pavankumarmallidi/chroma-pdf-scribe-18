@@ -93,10 +93,10 @@
     @apply bg-background text-foreground;
   }
 
-  /* Global Custom Scrollbar Styling */
+  /* Modern Custom Scrollbar Styling */
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(99, 102, 241, 0.6) rgba(42, 42, 42, 0.3);
+    scrollbar-color: rgba(139, 92, 246, 0.6) rgba(255, 255, 255, 0.1);
   }
 
   *::-webkit-scrollbar {
@@ -105,52 +105,73 @@
   }
 
   *::-webkit-scrollbar-track {
-    background: rgba(42, 42, 42, 0.3);
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin: 4px;
   }
 
   *::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(180deg, rgba(139, 92, 246, 0.8), rgba(99, 102, 241, 0.8));
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, rgba(99, 102, 241, 1), rgba(139, 92, 246, 1));
-    box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
+    background: linear-gradient(180deg, rgba(139, 92, 246, 1), rgba(99, 102, 241, 1));
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+    transform: scaleY(1.1);
   }
 
   *::-webkit-scrollbar-corner {
-    background: rgba(42, 42, 42, 0.3);
+    background: rgba(255, 255, 255, 0.05);
   }
 
-  /* Enhanced scrollbar for main content areas */
-  .enhanced-scroll::-webkit-scrollbar {
-    width: 12px;
+  /* Enhanced scrollbar for chat area */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 10px;
   }
 
-  .enhanced-scroll::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, rgba(99, 102, 241, 0.9), rgba(139, 92, 246, 0.9));
-    border-radius: 6px;
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    margin: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(139, 92, 246, 0.9), rgba(99, 102, 241, 0.9));
+    border-radius: 10px;
     border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
   }
 
-  .enhanced-scroll::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, rgba(99, 102, 241, 1), rgba(139, 92, 246, 1));
-    box-shadow: 0 0 12px rgba(99, 102, 241, 0.6);
-    transform: scale(1.05);
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(139, 92, 246, 1), rgba(99, 102, 241, 1));
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.6);
+    transform: scaleX(1.2);
+  }
+
+  /* Ensure all pages have scrollbars when needed */
+  html, body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .page-container {
+    min-height: 100vh;
+    overflow-y: auto;
   }
 }
 
-/* Animation keyframes for enhanced UX */
+/* Enhanced Animation keyframes */
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(15px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -172,8 +193,28 @@
   }
 }
 
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.6), 0 0 40px rgba(139, 92, 246, 0.3);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .animate-fade-in {
-  animation: fade-in 0.3s ease-out;
+  animation: fade-in 0.5s ease-out;
 }
 
 .animate-shimmer {
@@ -182,4 +223,35 @@
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+  backdrop-filter: blur(16px);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Smooth transitions for interactive elements */
+.interactive {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }

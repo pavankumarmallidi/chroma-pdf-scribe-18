@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { User, Home, LogOut } from "lucide-react";
+import { User, Home, Power } from "lucide-react";
 
 interface UserHeaderProps {
   getUserDisplayName: () => string;
@@ -11,50 +11,52 @@ interface UserHeaderProps {
 
 const UserHeader = ({ getUserDisplayName, onHomeClick, onLogout }: UserHeaderProps) => {
   return (
-    <div className="relative z-10 p-4 sm:p-6 border-b border-gray-700/30">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] rounded-full flex items-center justify-center shadow-lg">
-            <User className="w-5 h-5 text-white" />
+    <div className="relative z-10 backdrop-blur-xl bg-white/5 border-b border-white/10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-violet-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-violet-500/25">
+              <User className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-white tracking-tight">Welcome back!</h2>
+              <p className="text-gray-300 text-sm">{getUserDisplayName()}</p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-lg font-semibold text-white">Welcome back!</h2>
-            <p className="text-gray-300 text-sm">{getUserDisplayName()}</p>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={onHomeClick}
-                variant="outline"
-                size="icon"
-                className="bg-transparent border-gray-600 text-gray-300 hover:bg-[#6366f1] hover:border-[#6366f1] hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-[#6366f1]/20"
-              >
-                <Home className="w-4 h-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom" className="bg-[#1e1e1e] border-gray-600 text-white">
-              <p>Go to Home</p>
-            </TooltipContent>
-          </Tooltip>
+          
+          <div className="flex items-center gap-3">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={onHomeClick}
+                  variant="outline"
+                  size="icon"
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-white/10 rounded-xl"
+                >
+                  <Home className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="bg-gray-900 border-gray-700 text-white">
+                <p>Go to Home</p>
+              </TooltipContent>
+            </Tooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={onLogout}
-                variant="outline"
-                size="icon"
-                className="bg-transparent border-red-600/50 text-red-400 hover:bg-red-600 hover:border-red-600 hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-600/20 group"
-              >
-                <LogOut className="w-4 h-4 group-hover:animate-pulse" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom" className="bg-red-600 border-red-500 text-white">
-              <p>Logout</p>
-            </TooltipContent>
-          </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={onLogout}
+                  variant="outline"
+                  size="icon"
+                  className="bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 hover:text-red-300 backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-500/20 group rounded-xl"
+                >
+                  <Power className="w-4 h-4 group-hover:animate-pulse transition-transform group-hover:rotate-12" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="bg-red-600 border-red-500 text-white">
+                <p>Logout</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </div>
       </div>
     </div>

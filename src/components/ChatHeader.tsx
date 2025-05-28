@@ -1,16 +1,25 @@
 
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Zap } from "lucide-react";
 
 const ChatHeader = () => {
   return (
-    <div className="p-4 sm:p-6 border-b border-gray-700/50 flex-shrink-0">
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center">
-          <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+    <div className="px-6 py-4 backdrop-blur-sm bg-white/5 border-b border-white/10 flex-shrink-0">
+      <div className="flex items-center gap-4">
+        <div className="w-10 h-10 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/25">
+          <MessageCircle className="w-5 h-5 text-white" />
         </div>
-        <div>
-          <h2 className="text-lg sm:text-xl font-bold text-white">AI Assistant</h2>
-          <p className="text-gray-400 text-xs sm:text-sm">Ask anything about your document</p>
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-bold text-white tracking-tight">AI Assistant</h2>
+            <div className="flex items-center gap-1 px-2 py-1 bg-green-500/20 rounded-full border border-green-500/30">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-xs text-green-400 font-medium">Online</span>
+            </div>
+          </div>
+          <p className="text-gray-300 text-sm flex items-center gap-1">
+            <Zap className="w-3 h-3 text-violet-400" />
+            Ask anything about your document
+          </p>
         </div>
       </div>
     </div>
