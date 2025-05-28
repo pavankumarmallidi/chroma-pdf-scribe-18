@@ -4,11 +4,13 @@
  */
 export const uploadToWebhook = async (
   file: File,
+  userEmail: string,
   onProgress: (progress: number) => void
 ): Promise<any> => {
   return new Promise((resolve, reject) => {
     const formData = new FormData();
     formData.append('pdf', file);
+    formData.append('userEmail', userEmail);
 
     const webhookUrl = "http://localhost:5678/webhook-test/a88a8171-43a6-4a0a-b351-669b761c4f80";
 

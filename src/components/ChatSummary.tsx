@@ -46,14 +46,6 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
     e.preventDefault();
     if (!inputMessage.trim() || !user?.email) return;
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: inputMessage,
-      isUser: true,
-      timestamp: new Date(),
-    };
-
-    setMessages(prev => [...prev, userMessage]);
     const messageToSend = inputMessage;
     setInputMessage("");
     setIsLoading(true);
@@ -61,13 +53,23 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
     try {
       const response = await sendChatMessage(messageToSend, user.email);
       
+      // Only add messages after receiving backend confirmation
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        text: messageToSend,
+        isUser: true,
+        timestamp: new Date(),
+      };
+
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
         text: response?.message || "Based on your PDF analysis, I can help you understand the key concepts and details from your document. Could you be more specific about what aspect you'd like me to elaborate on?",
         isUser: false,
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, botResponse]);
+      
+      // Add both messages only after successful response
+      setMessages(prev => [...prev, userMessage, botResponse]);
     } catch (error) {
       console.error("Chat message failed:", error);
       toast({

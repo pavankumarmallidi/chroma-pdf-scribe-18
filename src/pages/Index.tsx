@@ -36,11 +36,20 @@ const Index = () => {
       return;
     }
 
+    if (!user?.email) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to upload files.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsUploading(true);
     setUploadProgress(0);
     
     try {
-      const responseData = await uploadToWebhook(file, setUploadProgress);
+      const responseData = await uploadToWebhook(file, user.email, setUploadProgress);
       
       // Extract the analysis data from the webhook response
       if (responseData && responseData.length > 0 && responseData[0].output) {
