@@ -14,6 +14,7 @@ interface Message {
   text: string;
   isUser: boolean;
   timestamp: Date;
+  relevanceScore?: number;
 }
 
 interface PdfAnalysisData {
@@ -61,11 +62,26 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
         timestamp: new Date(),
       };
 
+      // Parse the webhook response format
+      let botMessageText = "Based on your PDF analysis, I can help you understand the key concepts and details from your document. Could you be more specific about what aspect you'd like me to elaborate on?";
+      let relevanceScore: number | undefined;
+
+      if (response && Array.isArray(response) && response.length > 0 && response[0].output) {
+        const output = response[0].output;
+        if (output.answer) {
+          botMessageText = output.answer;
+        }
+        if (output.relevanceScore !== undefined) {
+          relevanceScore = output.relevanceScore;
+        }
+      }
+
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: response?.message || "Based on your PDF analysis, I can help you understand the key concepts and details from your document. Could you be more specific about what aspect you'd like me to elaborate on?",
+        text: botMessageText,
         isUser: false,
         timestamp: new Date(),
+        relevanceScore: relevanceScore,
       };
       
       // Add both messages only after successful response
@@ -171,6 +187,16 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
                           } p-4 shadow-lg`}
                         >
                           <p className="text-base leading-relaxed">{message.text}</p>
+                          
+                          {/* Display relevance score for bot messages */}
+                          {!message.isUser && message.relevanceScore !== undefined && (
+                            <div className="flex items-center gap-1 mt-2 pt-2 border-t border-[#535353]">
+                              <span className="text-xs text-[#b3b3b3]">
+                                🔎 Relevance: {message.relevanceScore.toFixed(1)}
+                              </span>
+                            </div>
+                          )}
+                          
                           <p className="text-xs opacity-70 mt-2">
                             {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </p>

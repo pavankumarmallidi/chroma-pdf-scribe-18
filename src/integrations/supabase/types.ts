@@ -9,6 +9,27 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      "PDF INFO STORAGE": {
+        Row: {
+          Context: string
+          created_at: string
+          EMAIL: string
+          id: number
+        }
+        Insert: {
+          Context: string
+          created_at?: string
+          EMAIL: string
+          id?: number
+        }
+        Update: {
+          Context?: string
+          created_at?: string
+          EMAIL?: string
+          id?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
