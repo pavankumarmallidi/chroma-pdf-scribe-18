@@ -1,4 +1,3 @@
-
 /**
  * Service for handling PDF uploads to n8n webhook
  */
@@ -10,7 +9,7 @@ export const uploadToWebhook = async (
     const formData = new FormData();
     formData.append('pdf', file);
 
-    const webhookUrl = "http://localhost:5678/webhook/a88a8171-43a6-4a0a-b351-669b761c4f80";
+    const webhookUrl = "http://localhost:5678/webhook-test/a88a8171-43a6-4a0a-b351-669b761c4f80";
 
     fetch(webhookUrl, {
       method: 'POST',
