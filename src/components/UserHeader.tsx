@@ -14,7 +14,7 @@ const UserHeader = ({ getUserDisplayName, onHomeClick, onLogout }: UserHeaderPro
     <div className="relative z-10 p-4 sm:p-6 border-b border-gray-700/30">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] rounded-full flex items-center justify-center shadow-lg">
             <User className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -30,12 +30,12 @@ const UserHeader = ({ getUserDisplayName, onHomeClick, onLogout }: UserHeaderPro
                 onClick={onHomeClick}
                 variant="outline"
                 size="icon"
-                className="bg-transparent border-gray-600 text-gray-300 hover:bg-[#6366f1] hover:border-[#6366f1] hover:text-white transition-all duration-300 hover:scale-105"
+                className="bg-transparent border-gray-600 text-gray-300 hover:bg-[#6366f1] hover:border-[#6366f1] hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-[#6366f1]/20"
               >
                 <Home className="w-4 h-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent side="bottom" className="bg-[#1e1e1e] border-gray-600 text-white">
               <p>Go to Home</p>
             </TooltipContent>
           </Tooltip>
@@ -46,12 +46,12 @@ const UserHeader = ({ getUserDisplayName, onHomeClick, onLogout }: UserHeaderPro
                 onClick={onLogout}
                 variant="outline"
                 size="icon"
-                className="bg-transparent border-red-600/50 text-red-400 hover:bg-red-600 hover:border-red-600 hover:text-white transition-all duration-300 hover:scale-105"
+                className="bg-transparent border-red-600/50 text-red-400 hover:bg-red-600 hover:border-red-600 hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-600/20 group"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-4 h-4 group-hover:animate-pulse" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent side="bottom" className="bg-red-600 border-red-500 text-white">
               <p>Logout</p>
             </TooltipContent>
           </Tooltip>

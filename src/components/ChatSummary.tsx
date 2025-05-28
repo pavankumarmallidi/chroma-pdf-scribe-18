@@ -111,7 +111,7 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#1a1a2e] to-[#16213e] relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#1a1a2e] to-[#16213e] relative overflow-hidden enhanced-scroll">
       {/* Background decoration */}
       <div 
         className="absolute inset-0"
@@ -124,7 +124,7 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
       <div className="relative z-10 p-4 sm:p-6">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] rounded-lg flex items-center justify-center shadow-lg">
               <FileText className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
             </div>
             <div>
@@ -135,7 +135,7 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
           <Button
             onClick={onBackToHome}
             variant="outline"
-            className="bg-transparent border-gray-600 text-gray-300 hover:bg-[#6366f1] hover:border-[#6366f1] hover:text-white transition-all duration-300"
+            className="bg-transparent border-gray-600 text-gray-300 hover:bg-[#6366f1] hover:border-[#6366f1] hover:text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#6366f1]/20"
           >
             <Home className="w-4 h-4 mr-2" />
             Back to Home
@@ -143,9 +143,9 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
         </div>
       </div>
 
-      {/* Main Content - Fixed height to fit screen better */}
+      {/* Main Content - Optimized height for better responsiveness */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-4 sm:pb-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 h-[calc(100vh-180px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6" style={{ height: 'calc(100vh - 200px)' }}>
           
           {/* Document Analysis Sidebar */}
           <DocumentSidebar pdfAnalysisData={pdfAnalysisData} />
