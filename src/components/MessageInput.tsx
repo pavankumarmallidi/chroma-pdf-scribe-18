@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Send, Loader2 } from "lucide-react";
 
 interface MessageInputProps {
@@ -21,18 +21,17 @@ const MessageInput = ({ inputMessage, setInputMessage, onSendMessage, isLoading 
   };
 
   return (
-    <div className="p-6 backdrop-blur-sm bg-white/5 border-t border-white/10">
+    <div className="p-4 backdrop-blur-sm bg-white/5 border-t border-white/10 flex-shrink-0">
       <form onSubmit={onSendMessage} className="flex gap-3 items-end">
         <div className="flex-1 relative">
-          <Input
+          <Textarea
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Ask anything about your PDF..."
-            className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 rounded-2xl px-4 py-3 text-sm resize-none transition-all duration-300 hover:border-white/30 focus:bg-white/15"
+            className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/20 rounded-2xl px-4 py-3 text-sm resize-none transition-all duration-300 hover:border-white/30 focus:bg-white/15 min-h-[48px] max-h-[120px]"
             disabled={isLoading}
             rows={1}
-            style={{ minHeight: '48px' }}
           />
         </div>
         <Button

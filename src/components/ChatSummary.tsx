@@ -155,8 +155,8 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
         </div>
       </div>
 
-      {/* Main Content with improved layout */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6 h-[calc(100vh-120px)]">
+      {/* Main Content with fixed height */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6 h-[calc(100vh-140px)]">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
           
           {/* Enhanced Document Sidebar */}
@@ -164,13 +164,13 @@ const ChatSummary = ({ onBackToHome, pdfAnalysisData }: ChatSummaryProps) => {
             <DocumentSidebar pdfAnalysisData={pdfAnalysisData} />
           </div>
 
-          {/* Redesigned Chat Interface */}
+          {/* Chat Interface with Fixed Height */}
           <div className="lg:col-span-3 order-1 lg:order-2 h-full">
             <Card className="h-full flex flex-col bg-white/5 backdrop-blur-xl border-white/10 shadow-2xl shadow-black/20 rounded-3xl overflow-hidden">
               <ChatHeader />
               
-              {/* Chat Messages Area with custom scrollbar */}
-              <div className="flex-1 relative overflow-hidden">
+              {/* Chat Messages Area with fixed height and scrollbar */}
+              <div className="flex-1 relative overflow-hidden min-h-0">
                 <MessageList 
                   messages={messages} 
                   isLoading={isLoading} 
