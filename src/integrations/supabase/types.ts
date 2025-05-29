@@ -9,48 +9,24 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      "PDF INFO STORAGE": {
+      "PDF OCR STORAGE": {
         Row: {
-          Context: string
+          Content: string
           created_at: string
-          EMAIL: string
+          Email: string
           id: number
         }
         Insert: {
-          Context: string
+          Content: string
           created_at?: string
-          EMAIL: string
+          Email: string
           id?: number
         }
         Update: {
-          Context?: string
+          Content?: string
           created_at?: string
-          EMAIL?: string
+          Email?: string
           id?: number
-        }
-        Relationships: []
-      }
-      profiles: {
-        Row: {
-          created_at: string | null
-          email: string | null
-          full_name: string | null
-          id: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          email?: string | null
-          full_name?: string | null
-          id: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string
-          updated_at?: string | null
         }
         Relationships: []
       }
