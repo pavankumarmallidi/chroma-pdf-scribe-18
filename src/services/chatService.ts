@@ -6,7 +6,7 @@ export const sendChatMessage = async (
   message: string,
   userEmail: string
 ): Promise<any> => {
-  const webhookUrl = "http://localhost:5678/webhook/5221a79c-7222-4245-98ec-01d6b56d20c7";
+  const webhookUrl = "https://pavankumarmallidi-n8n.onrender.com/webhook/5221a79c-7222-4245-98ec-01d6b56d20c7";
   
   const payload = {
     message: message,
