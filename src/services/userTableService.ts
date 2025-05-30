@@ -14,10 +14,6 @@ export interface PdfMetadata {
   updated_at?: string;
 }
 
-const getTableName = (userEmail: string): string => {
-  return `pdf_${userEmail.replace(/[@.]/g, '_')}`;
-};
-
 export const createUserTableIfNotExists = async (userEmail: string): Promise<boolean> => {
   try {
     console.log('Checking if user table exists for:', userEmail);
@@ -57,23 +53,17 @@ export const insertPdfMetadata = async (userEmail: string, metadata: Omit<PdfMet
     console.log('Inserting PDF metadata for user:', userEmail);
     console.log('Metadata:', metadata);
     
-    const tableName = getTableName(userEmail);
-    
     const { data, error } = await supabase
-      .from(tableName)
-      .insert([{
+      .rpc('insert_pdf_metadata', {
+        user_email: userEmail,
         pdf_name: metadata.pdf_name,
         pdf_document: metadata.pdf_document,
         ocr_value: metadata.ocr_value,
         summary: metadata.summary,
         num_pages: metadata.num_pages,
         num_words: metadata.num_words,
-        language: metadata.language,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }])
-      .select('id')
-      .single();
+        language: metadata.language
+      });
 
     if (error) {
       console.error('Error inserting PDF metadata:', error);
@@ -81,7 +71,7 @@ export const insertPdfMetadata = async (userEmail: string, metadata: Omit<PdfMet
     }
 
     console.log('PDF metadata inserted successfully:', data);
-    return data.id;
+    return data;
   } catch (error) {
     console.error('Error in insertPdfMetadata:', error);
     throw error;
@@ -92,9 +82,11 @@ export const getUserPdfs = async (userEmail: string): Promise<PdfMetadata[]> => 
   try {
     console.log('Fetching PDFs for user:', userEmail);
     
-    const tableName = getTableName(userEmail);
+    // Since we can't use dynamic table names with TypeScript, we'll need to use RPC
+    // For now, we'll use a workaround with any type casting
+    const tableName = `pdf_${userEmail.replace(/[@.]/g, '_')}`;
     
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from(tableName)
       .select('*')
       .order('created_at', { ascending: false });
@@ -116,9 +108,10 @@ export const getPdfById = async (userEmail: string, pdfId: string): Promise<PdfM
   try {
     console.log('Fetching PDF by ID for user:', userEmail, 'PDF ID:', pdfId);
     
-    const tableName = getTableName(userEmail);
+    // Since we can't use dynamic table names with TypeScript, we'll use a workaround
+    const tableName = `pdf_${userEmail.replace(/[@.]/g, '_')}`;
     
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from(tableName)
       .select('*')
       .eq('id', pdfId)
