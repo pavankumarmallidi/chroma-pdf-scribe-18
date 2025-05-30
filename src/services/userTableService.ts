@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 export interface PdfMetadata {
@@ -11,6 +10,22 @@ export interface PdfMetadata {
   language: string;
   created_at?: string;
 }
+
+// Helper function to generate table name (matching PostgreSQL logic)
+const getTableName = (userEmail: string): string => {
+  let cleanEmail: string;
+  
+  if (userEmail.toLowerCase().includes('@gmail.com')) {
+    cleanEmail = userEmail.toLowerCase().replace('@gmail.com', '');
+  } else {
+    cleanEmail = userEmail.toLowerCase().split('@')[0];
+  }
+  
+  // Replace special characters
+  cleanEmail = cleanEmail.replace(/[.-]/g, '_');
+  
+  return `pdf_${cleanEmail}`;
+};
 
 export const createUserTableIfNotExists = async (userEmail: string): Promise<boolean> => {
   try {
@@ -51,6 +66,9 @@ export const insertPdfMetadata = async (userEmail: string, metadata: Omit<PdfMet
     console.log('Inserting PDF metadata for user:', userEmail);
     console.log('Metadata:', metadata);
     
+    // Ensure table exists before inserting
+    await createUserTableIfNotExists(userEmail);
+    
     const { data, error } = await supabase
       .rpc('insert_pdf_metadata', {
         user_email: userEmail,
@@ -79,7 +97,13 @@ export const getUserPdfs = async (userEmail: string): Promise<PdfMetadata[]> => 
   try {
     console.log('Fetching PDFs for user:', userEmail);
     
-    const tableName = `pdf_${userEmail.replace(/[@.]/g, '_')}`;
+    // Ensure table exists
+    const tableExists = await createUserTableIfNotExists(userEmail);
+    if (!tableExists) {
+      return [];
+    }
+    
+    const tableName = getTableName(userEmail);
     
     const { data, error } = await (supabase as any)
       .from(tableName)
@@ -103,7 +127,7 @@ export const getPdfById = async (userEmail: string, pdfId: string): Promise<PdfM
   try {
     console.log('Fetching PDF by ID for user:', userEmail, 'PDF ID:', pdfId);
     
-    const tableName = `pdf_${userEmail.replace(/[@.]/g, '_')}`;
+    const tableName = getTableName(userEmail);
     
     const { data, error } = await (supabase as any)
       .from(tableName)
