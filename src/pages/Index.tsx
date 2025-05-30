@@ -12,6 +12,7 @@ import LoadingState from "@/components/LoadingState";
 import UploadInterface from "@/components/UploadInterface";
 import PdfList from "@/components/PdfList";
 import PdfChatView from "@/components/PdfChatView";
+import PdfAnalysisCard from "@/components/PdfAnalysisCard";
 
 interface PdfAnalysisData {
   summary: string;
@@ -20,7 +21,7 @@ interface PdfAnalysisData {
   language: string;
 }
 
-type AppView = 'home' | 'auth' | 'upload' | 'list' | 'chat' | 'pdf-chat';
+type AppView = 'home' | 'auth' | 'upload' | 'list' | 'chat' | 'pdf-chat' | 'analysis';
 
 const Index = () => {
   const { user, loading, signOut } = useAuth();
@@ -29,6 +30,7 @@ const Index = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [pdfAnalysisData, setPdfAnalysisData] = useState<PdfAnalysisData | null>(null);
   const [selectedPdfId, setSelectedPdfId] = useState<string | null>(null);
+  const [currentPdfName, setCurrentPdfName] = useState<string>('');
   const { toast } = useToast();
 
   const handleGetStarted = () => {
@@ -64,6 +66,7 @@ const Index = () => {
 
     setIsUploading(true);
     setUploadProgress(0);
+    setCurrentPdfName(file.name);
     
     try {
       // Ensure user table exists before upload
@@ -83,8 +86,7 @@ const Index = () => {
         console.log('Storing PDF metadata...');
         const pdfMetadata = {
           pdf_name: file.name,
-          pdf_document: file.name, // You might want to store actual file path/URL
-          ocr_value: analysisData.ocrText || '',
+          ocr_text: analysisData.ocrText || '',
           summary: analysisData.summary || '',
           num_pages: analysisData.totalPages || 0,
           num_words: analysisData.totalWords || 0,
@@ -101,7 +103,7 @@ const Index = () => {
           totalWords: analysisData.totalWords,
           language: analysisData.language
         });
-        setCurrentView('chat');
+        setCurrentView('analysis');
         
         toast({
           title: "PDF analyzed successfully!",
@@ -133,6 +135,7 @@ const Index = () => {
     setCurrentView('home');
     setPdfAnalysisData(null);
     setSelectedPdfId(null);
+    setCurrentPdfName('');
     toast({
       title: "Logged out",
       description: "See you next time!",
@@ -142,6 +145,10 @@ const Index = () => {
   const handlePdfSelect = (pdf: PdfMetadata) => {
     setSelectedPdfId(pdf.id);
     setCurrentView('pdf-chat');
+  };
+
+  const handleStartChat = () => {
+    setCurrentView('chat');
   };
 
   const getUserDisplayName = () => {
@@ -166,6 +173,17 @@ const Index = () => {
 
   if (currentView === 'auth') {
     return <AuthPage onBackToHome={() => setCurrentView('home')} onSuccess={() => setCurrentView('list')} />;
+  }
+
+  if (currentView === 'analysis' && pdfAnalysisData) {
+    return (
+      <PdfAnalysisCard
+        pdfName={currentPdfName}
+        analysisData={pdfAnalysisData}
+        onStartChat={handleStartChat}
+        onBackToUpload={() => setCurrentView('upload')}
+      />
+    );
   }
 
   if (currentView === 'chat' && pdfAnalysisData) {

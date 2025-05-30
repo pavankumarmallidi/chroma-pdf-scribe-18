@@ -9,84 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      pdf_mspreddy789_at_gmail_com: {
-        Row: {
-          created_at: string | null
-          id: string
-          language: string | null
-          num_pages: number | null
-          num_words: number | null
-          ocr_value: string | null
-          pdf_document: string | null
-          pdf_name: string
-          summary: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          language?: string | null
-          num_pages?: number | null
-          num_words?: number | null
-          ocr_value?: string | null
-          pdf_document?: string | null
-          pdf_name: string
-          summary?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          language?: string | null
-          num_pages?: number | null
-          num_words?: number | null
-          ocr_value?: string | null
-          pdf_document?: string | null
-          pdf_name?: string
-          summary?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      pdf_pavankumarmallidi55_at_gmail_com: {
-        Row: {
-          created_at: string | null
-          id: string
-          language: string | null
-          num_pages: number | null
-          num_words: number | null
-          ocr_value: string | null
-          pdf_document: string | null
-          pdf_name: string
-          summary: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          language?: string | null
-          num_pages?: number | null
-          num_words?: number | null
-          ocr_value?: string | null
-          pdf_document?: string | null
-          pdf_name: string
-          summary?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          language?: string | null
-          num_pages?: number | null
-          num_words?: number | null
-          ocr_value?: string | null
-          pdf_document?: string | null
-          pdf_name?: string
-          summary?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
@@ -105,16 +28,26 @@ export type Database = {
         Returns: string
       }
       insert_pdf_metadata: {
-        Args: {
-          user_email: string
-          pdf_name: string
-          pdf_document?: string
-          ocr_value?: string
-          summary?: string
-          num_pages?: number
-          num_words?: number
-          language?: string
-        }
+        Args:
+          | {
+              user_email: string
+              pdf_name: string
+              ocr_text?: string
+              summary?: string
+              num_pages?: number
+              num_words?: number
+              language?: string
+            }
+          | {
+              user_email: string
+              pdf_name: string
+              pdf_document?: string
+              ocr_value?: string
+              summary?: string
+              num_pages?: number
+              num_words?: number
+              language?: string
+            }
         Returns: string
       }
     }
