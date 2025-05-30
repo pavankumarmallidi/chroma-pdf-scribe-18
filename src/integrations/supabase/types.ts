@@ -35,7 +35,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_user_pdf_table: {
+        Args: { user_email: string }
+        Returns: boolean
+      }
+      get_user_table_name: {
+        Args: { user_email: string }
+        Returns: string
+      }
+      insert_pdf_metadata: {
+        Args: {
+          user_email: string
+          pdf_name: string
+          pdf_document?: string
+          ocr_value?: string
+          summary?: string
+          num_pages?: number
+          num_words?: number
+          language?: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

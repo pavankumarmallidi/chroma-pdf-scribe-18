@@ -3,12 +3,15 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { uploadToWebhook } from "@/services/webhookService";
+import { insertPdfMetadata, createUserTableIfNotExists, type PdfMetadata } from "@/services/userTableService";
 import ChatSummary from "@/components/ChatSummary";
 import AuthPage from "@/components/AuthPage";
 import HomePage from "@/components/HomePage";
 import UserHeader from "@/components/UserHeader";
 import LoadingState from "@/components/LoadingState";
 import UploadInterface from "@/components/UploadInterface";
+import PdfList from "@/components/PdfList";
+import PdfChatView from "@/components/PdfChatView";
 
 interface PdfAnalysisData {
   summary: string;
@@ -17,21 +20,22 @@ interface PdfAnalysisData {
   language: string;
 }
 
+type AppView = 'home' | 'auth' | 'upload' | 'list' | 'chat' | 'pdf-chat';
+
 const Index = () => {
   const { user, loading, signOut } = useAuth();
-  const [showAuth, setShowAuth] = useState(false);
-  const [showApp, setShowApp] = useState(false);
+  const [currentView, setCurrentView] = useState<AppView>('home');
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [showChat, setShowChat] = useState(false);
   const [pdfAnalysisData, setPdfAnalysisData] = useState<PdfAnalysisData | null>(null);
+  const [selectedPdfId, setSelectedPdfId] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleGetStarted = () => {
     if (user) {
-      setShowApp(true);
+      setCurrentView('list');
     } else {
-      setShowAuth(true);
+      setCurrentView('auth');
     }
   };
 
@@ -59,17 +63,34 @@ const Index = () => {
     setUploadProgress(0);
     
     try {
+      // Ensure user table exists
+      await createUserTableIfNotExists(user.email);
+      
       const responseData = await uploadToWebhook(file, user.email, setUploadProgress);
       
       if (responseData && responseData.length > 0 && responseData[0].output) {
         const analysisData = responseData[0].output;
+        
+        // Store PDF metadata in user's table
+        const pdfId = await insertPdfMetadata(user.email, {
+          pdf_name: file.name,
+          pdf_document: file.name, // You might want to store actual file path/URL
+          ocr_value: analysisData.ocrText || '',
+          summary: analysisData.summary || '',
+          num_pages: analysisData.totalPages || 0,
+          num_words: analysisData.totalWords || 0,
+          language: analysisData.language || 'Unknown'
+        });
+
+        console.log('PDF metadata stored with ID:', pdfId);
+        
         setPdfAnalysisData({
           summary: analysisData.summary,
           totalPages: analysisData.totalPages,
           totalWords: analysisData.totalWords,
           language: analysisData.language
         });
-        setShowChat(true);
+        setCurrentView('chat');
       }
       
       toast({
@@ -91,24 +112,18 @@ const Index = () => {
 
   const handleLogout = async () => {
     await signOut();
-    setShowAuth(false);
-    setShowApp(false);
-    setShowChat(false);
+    setCurrentView('home');
     setPdfAnalysisData(null);
+    setSelectedPdfId(null);
     toast({
       title: "Logged out",
       description: "See you next time!",
     });
   };
 
-  const handleBackToHome = () => {
-    setShowChat(false);
-    setPdfAnalysisData(null);
-  };
-
-  const handleBackToApp = () => {
-    setShowApp(true);
-    setShowAuth(false);
+  const handlePdfSelect = (pdf: PdfMetadata) => {
+    setSelectedPdfId(pdf.id);
+    setCurrentView('pdf-chat');
   };
 
   const getUserDisplayName = () => {
@@ -131,20 +146,40 @@ const Index = () => {
     );
   }
 
-  if (showAuth) {
-    return <AuthPage onBackToHome={() => setShowAuth(false)} onSuccess={handleBackToApp} />;
+  if (currentView === 'auth') {
+    return <AuthPage onBackToHome={() => setCurrentView('home')} onSuccess={() => setCurrentView('list')} />;
   }
 
-  if (showChat && pdfAnalysisData) {
-    return <ChatSummary onBackToHome={handleBackToHome} pdfAnalysisData={pdfAnalysisData} />;
+  if (currentView === 'chat' && pdfAnalysisData) {
+    return <ChatSummary onBackToHome={() => setCurrentView('list')} pdfAnalysisData={pdfAnalysisData} />;
   }
 
-  if (showApp && user) {
+  if (currentView === 'pdf-chat' && selectedPdfId && user?.email) {
+    return (
+      <PdfChatView
+        userEmail={user.email}
+        pdfId={selectedPdfId}
+        onBackToList={() => setCurrentView('list')}
+      />
+    );
+  }
+
+  if (currentView === 'list' && user?.email) {
+    return (
+      <PdfList
+        userEmail={user.email}
+        onPdfSelect={handlePdfSelect}
+        onBackToUpload={() => setCurrentView('upload')}
+      />
+    );
+  }
+
+  if (currentView === 'upload' && user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#1a1a2e] to-[#16213e] relative overflow-hidden">
         <UserHeader 
           getUserDisplayName={getUserDisplayName}
-          onHomeClick={() => setShowApp(false)}
+          onHomeClick={() => setCurrentView('list')}
           onLogout={handleLogout}
         />
 
@@ -155,6 +190,12 @@ const Index = () => {
         )}
       </div>
     );
+  }
+
+  // Default view based on authentication status
+  if (user) {
+    setCurrentView('list');
+    return null; // Will re-render with list view
   }
 
   return <HomePage onGetStarted={handleGetStarted} />;

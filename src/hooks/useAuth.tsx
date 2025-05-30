@@ -1,7 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { createUserTableIfNotExists } from '@/services/userTableService';
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -11,16 +11,26 @@ export const useAuth = () => {
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         console.log('Auth state changed:', event, session);
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+
+        // Create user table when user signs in
+        if (event === 'SIGNED_IN' && session?.user?.email) {
+          try {
+            await createUserTableIfNotExists(session.user.email);
+            console.log('User table check/creation completed for:', session.user.email);
+          } catch (error) {
+            console.error('Failed to create user table:', error);
+          }
+        }
       }
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
+    supabase.auth.getSession().then(async ({ data: { session }, error }) => {
       if (error) {
         console.error('Error getting session:', error);
       }
@@ -28,6 +38,16 @@ export const useAuth = () => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+
+      // Create user table for existing session
+      if (session?.user?.email) {
+        try {
+          await createUserTableIfNotExists(session.user.email);
+          console.log('User table check/creation completed for existing session:', session.user.email);
+        } catch (error) {
+          console.error('Failed to create user table for existing session:', error);
+        }
+      }
     });
 
     return () => subscription.unsubscribe();
