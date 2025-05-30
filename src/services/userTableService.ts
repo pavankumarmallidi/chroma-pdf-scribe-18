@@ -1,5 +1,6 @@
 
 import { supabase } from '@/integrations/supabase/client';
+import { createClient } from '@supabase/supabase-js';
 
 export interface PdfMetadata {
   id: string;
@@ -14,8 +15,16 @@ export interface PdfMetadata {
   updated_at: string;
 }
 
+// Create an untyped client for dynamic table operations
+const SUPABASE_URL = "https://jxcvonbmosywkqtomrbl.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4Y3ZvbmJtb3N5d2txdG9tcmJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0Mjc2NTYsImV4cCI6MjA2NDAwMzY1Nn0.L3oc3QtOnBBqxVIhiLimQub3LBG_GJWmw_SV-fkXGfU";
+
+const untypedSupabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
 export const createUserTableIfNotExists = async (userEmail: string): Promise<boolean> => {
   try {
+    console.log('Creating user table for:', userEmail);
+    
     const { data, error } = await supabase.rpc('create_user_pdf_table', {
       user_email: userEmail
     });
@@ -64,6 +73,8 @@ export const insertPdfMetadata = async (
   }
 ): Promise<string> => {
   try {
+    console.log('Inserting PDF metadata for:', userEmail, pdfData);
+    
     const { data, error } = await supabase.rpc('insert_pdf_metadata', {
       user_email: userEmail,
       ...pdfData
@@ -74,6 +85,7 @@ export const insertPdfMetadata = async (
       throw error;
     }
 
+    console.log('PDF metadata inserted with ID:', data);
     return data;
   } catch (error) {
     console.error('Failed to insert PDF metadata:', error);
@@ -83,9 +95,13 @@ export const insertPdfMetadata = async (
 
 export const getUserPdfs = async (userEmail: string): Promise<PdfMetadata[]> => {
   try {
-    const tableName = await getUserTableName(userEmail);
+    console.log('Fetching PDFs for user:', userEmail);
     
-    const { data, error } = await supabase
+    const tableName = await getUserTableName(userEmail);
+    console.log('Using table name:', tableName);
+    
+    // Use untyped client for dynamic table queries
+    const { data, error } = await untypedSupabase
       .from(tableName)
       .select('*')
       .order('created_at', { ascending: false });
@@ -95,6 +111,7 @@ export const getUserPdfs = async (userEmail: string): Promise<PdfMetadata[]> => 
       throw error;
     }
 
+    console.log('Fetched PDFs:', data);
     return data || [];
   } catch (error) {
     console.error('Failed to fetch user PDFs:', error);
@@ -104,9 +121,13 @@ export const getUserPdfs = async (userEmail: string): Promise<PdfMetadata[]> => 
 
 export const getPdfById = async (userEmail: string, pdfId: string): Promise<PdfMetadata | null> => {
   try {
-    const tableName = await getUserTableName(userEmail);
+    console.log('Fetching PDF by ID:', pdfId, 'for user:', userEmail);
     
-    const { data, error } = await supabase
+    const tableName = await getUserTableName(userEmail);
+    console.log('Using table name:', tableName);
+    
+    // Use untyped client for dynamic table queries
+    const { data, error } = await untypedSupabase
       .from(tableName)
       .select('*')
       .eq('id', pdfId)
@@ -117,6 +138,7 @@ export const getPdfById = async (userEmail: string, pdfId: string): Promise<PdfM
       throw error;
     }
 
+    console.log('Fetched PDF:', data);
     return data;
   } catch (error) {
     console.error('Failed to fetch PDF by ID:', error);

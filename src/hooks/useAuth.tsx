@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,19 +10,22 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('Setting up auth state listener...');
+    
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state changed:', event, session);
+        console.log('Auth state changed:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
 
         // Create user table when user signs in
         if (event === 'SIGNED_IN' && session?.user?.email) {
+          console.log('User signed in, creating table for:', session.user.email);
           try {
-            await createUserTableIfNotExists(session.user.email);
-            console.log('User table check/creation completed for:', session.user.email);
+            const tableCreated = await createUserTableIfNotExists(session.user.email);
+            console.log('User table creation result:', tableCreated);
           } catch (error) {
             console.error('Failed to create user table:', error);
           }
@@ -34,16 +38,17 @@ export const useAuth = () => {
       if (error) {
         console.error('Error getting session:', error);
       }
-      console.log('Initial session check:', session);
+      console.log('Initial session check:', session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
 
       // Create user table for existing session
       if (session?.user?.email) {
+        console.log('Existing session found, creating table for:', session.user.email);
         try {
-          await createUserTableIfNotExists(session.user.email);
-          console.log('User table check/creation completed for existing session:', session.user.email);
+          const tableCreated = await createUserTableIfNotExists(session.user.email);
+          console.log('User table creation result for existing session:', tableCreated);
         } catch (error) {
           console.error('Failed to create user table for existing session:', error);
         }

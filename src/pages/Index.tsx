@@ -59,20 +59,29 @@ const Index = () => {
       return;
     }
 
+    console.log('Starting PDF upload for user:', user.email);
+    console.log('File details:', { name: file.name, size: file.size, type: file.type });
+
     setIsUploading(true);
     setUploadProgress(0);
     
     try {
-      // Ensure user table exists
-      await createUserTableIfNotExists(user.email);
+      // Ensure user table exists before upload
+      console.log('Ensuring user table exists...');
+      const tableCreated = await createUserTableIfNotExists(user.email);
+      console.log('Table creation result:', tableCreated);
       
+      console.log('Starting webhook upload...');
       const responseData = await uploadToWebhook(file, user.email, setUploadProgress);
+      console.log('Webhook response received:', responseData);
       
       if (responseData && responseData.length > 0 && responseData[0].output) {
         const analysisData = responseData[0].output;
+        console.log('Analysis data:', analysisData);
         
         // Store PDF metadata in user's table
-        const pdfId = await insertPdfMetadata(user.email, {
+        console.log('Storing PDF metadata...');
+        const pdfMetadata = {
           pdf_name: file.name,
           pdf_document: file.name, // You might want to store actual file path/URL
           ocr_value: analysisData.ocrText || '',
@@ -80,8 +89,10 @@ const Index = () => {
           num_pages: analysisData.totalPages || 0,
           num_words: analysisData.totalWords || 0,
           language: analysisData.language || 'Unknown'
-        });
-
+        };
+        console.log('PDF metadata to insert:', pdfMetadata);
+        
+        const pdfId = await insertPdfMetadata(user.email, pdfMetadata);
         console.log('PDF metadata stored with ID:', pdfId);
         
         setPdfAnalysisData({
@@ -91,6 +102,13 @@ const Index = () => {
           language: analysisData.language
         });
         setCurrentView('chat');
+      } else {
+        console.warn('No valid analysis data received from webhook');
+        toast({
+          title: "Upload incomplete",
+          description: "PDF uploaded but no analysis data received.",
+          variant: "destructive",
+        });
       }
       
       toast({
