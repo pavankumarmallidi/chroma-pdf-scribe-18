@@ -9,12 +9,93 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      pdf_mspreddy789_at_gmail_com: {
+        Row: {
+          created_at: string | null
+          id: string
+          language: string | null
+          num_pages: number | null
+          num_words: number | null
+          ocr_value: string | null
+          pdf_document: string | null
+          pdf_name: string
+          summary: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          language?: string | null
+          num_pages?: number | null
+          num_words?: number | null
+          ocr_value?: string | null
+          pdf_document?: string | null
+          pdf_name: string
+          summary?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          language?: string | null
+          num_pages?: number | null
+          num_words?: number | null
+          ocr_value?: string | null
+          pdf_document?: string | null
+          pdf_name?: string
+          summary?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      pdf_pavankumarmallidi55_at_gmail_com: {
+        Row: {
+          created_at: string | null
+          id: string
+          language: string | null
+          num_pages: number | null
+          num_words: number | null
+          ocr_value: string | null
+          pdf_document: string | null
+          pdf_name: string
+          summary: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          language?: string | null
+          num_pages?: number | null
+          num_words?: number | null
+          ocr_value?: string | null
+          pdf_document?: string | null
+          pdf_name: string
+          summary?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          language?: string | null
+          num_pages?: number | null
+          num_words?: number | null
+          ocr_value?: string | null
+          pdf_document?: string | null
+          pdf_name?: string
+          summary?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      check_user_table_exists: {
+        Args: { user_email: string }
+        Returns: boolean
+      }
       create_user_pdf_table: {
         Args: { user_email: string }
         Returns: boolean
