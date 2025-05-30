@@ -12,7 +12,7 @@ export const uploadToWebhook = async (
     formData.append('pdf', file);
     formData.append('userEmail', userEmail);
 
-    const webhookUrl = "https://pavankumarmallidi-n8n.onrender.com/webhook/a88a8171-43a6-4a0a-b351-669b761c4f80";
+    const webhookUrl = "http://localhost:5678/webhook/a88a8171-43a6-4a0a-b351-669b761c4f80";
 
     fetch(webhookUrl, {
       method: 'POST',
