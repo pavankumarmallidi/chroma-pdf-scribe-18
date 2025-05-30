@@ -15,7 +15,7 @@ export interface PdfMetadata {
 }
 
 // Environment variables for Supabase configuration
-const SUPABASE_URL = https://jxcvonbmosywkqtomrbl.supabase.co;
+const SUPABASE_URL = jxcvonbmosywkqtomrbl.supabase.co;
 const SUPABASE_SERVICE_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4Y3ZvbmJtb3N5d2txdG9tcmJsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0ODQyNzY1NiwiZXhwIjoyMDY0MDAzNjU2fQ.eGq_KeaiOErsqbNV2bpAUm9FEvoDWG3e4cet_CdE_q8;
 const SUPABASE_ANON_KEY =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4Y3ZvbmJtb3N5d2txdG9tcmJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0Mjc2NTYsImV4cCI6MjA2NDAwMzY1Nn0.L3oc3QtOnBBqxVIhiLimQub3LBG_GJWmw_SV-fkXGfU;
 
