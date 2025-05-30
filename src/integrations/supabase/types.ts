@@ -28,26 +28,15 @@ export type Database = {
         Returns: string
       }
       insert_pdf_metadata: {
-        Args:
-          | {
-              user_email: string
-              pdf_name: string
-              ocr_text?: string
-              summary?: string
-              num_pages?: number
-              num_words?: number
-              language?: string
-            }
-          | {
-              user_email: string
-              pdf_name: string
-              pdf_document?: string
-              ocr_value?: string
-              summary?: string
-              num_pages?: number
-              num_words?: number
-              language?: string
-            }
+        Args: {
+          user_email: string
+          pdf_name: string
+          ocr_text?: string
+          summary?: string
+          num_pages?: number
+          num_words?: number
+          language?: string
+        }
         Returns: string
       }
     }

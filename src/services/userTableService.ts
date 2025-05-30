@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 export interface PdfMetadata {
@@ -11,7 +12,7 @@ export interface PdfMetadata {
   created_at?: string;
 }
 
-// Helper function to generate table name (matching PostgreSQL logic)
+// Helper function to generate table name (matching PostgreSQL logic exactly)
 const getTableName = (userEmail: string): string => {
   let cleanEmail: string;
   
@@ -21,7 +22,7 @@ const getTableName = (userEmail: string): string => {
     cleanEmail = userEmail.toLowerCase().split('@')[0];
   }
   
-  // Replace special characters
+  // Replace special characters to match backend function
   cleanEmail = cleanEmail.replace(/[.-]/g, '_');
   
   return `pdf_${cleanEmail}`;

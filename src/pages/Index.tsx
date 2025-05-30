@@ -24,7 +24,7 @@ interface PdfAnalysisData {
 type AppView = 'home' | 'auth' | 'upload' | 'list' | 'chat' | 'pdf-chat' | 'analysis';
 
 const Index = () => {
-  const { user, loading, signOut } = useAuth();
+  const { user, loading, authError, signOut } = useAuth();
   const [currentView, setCurrentView] = useState<AppView>('home');
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -166,7 +166,30 @@ const Index = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#1a1a2e] to-[#16213e] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#6366f1]"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#6366f1] mx-auto mb-4"></div>
+          <p className="text-white text-lg">Loading your session...</p>
+          {authError && (
+            <p className="text-red-400 text-sm mt-2">Error: {authError}</p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (authError && !user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#1a1a2e] to-[#16213e] flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-white mb-4">Authentication Error</h2>
+          <p className="text-red-400 mb-4">{authError}</p>
+          <button 
+            onClick={() => setCurrentView('auth')}
+            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white px-6 py-3 rounded-lg"
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
