@@ -102,6 +102,11 @@ const Index = () => {
           language: analysisData.language
         });
         setCurrentView('chat');
+        
+        toast({
+          title: "PDF analyzed successfully!",
+          description: "Your PDF has been processed and is ready for questions.",
+        });
       } else {
         console.warn('No valid analysis data received from webhook');
         toast({
@@ -110,11 +115,6 @@ const Index = () => {
           variant: "destructive",
         });
       }
-      
-      toast({
-        title: "PDF analyzed successfully!",
-        description: "Your PDF has been processed and is ready for questions.",
-      });
     } catch (error) {
       console.error("Upload failed:", error);
       toast({

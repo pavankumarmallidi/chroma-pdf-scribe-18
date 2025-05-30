@@ -9,27 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      "PDF OCR STORAGE": {
-        Row: {
-          Content: string
-          created_at: string
-          Email: string
-          id: number
-        }
-        Insert: {
-          Content: string
-          created_at?: string
-          Email: string
-          id?: number
-        }
-        Update: {
-          Content?: string
-          created_at?: string
-          Email?: string
-          id?: number
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
